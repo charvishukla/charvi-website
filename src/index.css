@@ -1,13 +1,99 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+html, body {
+  background-color: black;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.top-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 110vh;
+}
+
+.avatar-image {
+  max-width: 125px;
+  max-height: 125px;
+}
+
+.name {
+  font-size: 30px;
+  margin-top: 20px;
+  font-family: 'Special Elite', cursive;
+  color: rgba(244, 250, 225, 255);
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 0.15em solid rgba(244, 250, 225, 255);
+  animation: typing 2s steps(14) forwards, blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 14ch;
+  }
+}
+
+
+.links {
+  margin-top: 10px;
+}
+
+.links p {
+  margin: 5px 0;
+}
+
+h1 {
+  color: rgba(244,250,225,255);
+}
+
+h2 {
+  color: rgba(244,250,225,255);
+  font-size: 35px;
+  margin-top: 15px;
+  margin-left: 65px;
+  font-family: 'Special Elite', cursive;
+}
+
+.about {
+  color: #e7e1fa;
+  font-size: 20px;
+  margin-left: 65px;
+  margin-right: 150px;
+  font-family: 'Special Elite', cursive;
+}
+
+p, a{
+  color: #f4fae1;
+}
+
+.content-style {
+  font-family: 'Special Elite', cursive;
+}
+
+.divider {
+  border-top: 1px solid rgba(244,250,225,255);
+  margin: 20px 0;
+  margin-left: 65px;
+  margin-right: 150px;
+  opacity: 0.5;
+
+}
+
+.project-card {
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: rgba(244,250,225,255);
+  margin-left: 65px;
+  margin-right: 150px;
+  opacity: 0.7;
+}
+
+.proj-card-content {
+  font-family: 'Special Elite', cursive;
+  color: black;
 }
