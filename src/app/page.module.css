@@ -1,0 +1,32 @@
+.Name {
+  text-align: center;
+}
+.Introduction {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.Introduction p img {
+  flex-grow: 0;
+}
+
+.Introduction p {
+  text-align: left;
+  margin-left: 25px;
+  margin-right: 300px;
+    
+}
+
+.Introduction img {
+  width: 23%;
+  height: 23%;
+  display: inline-block;
+}
+.container {
+  height: 100%;
+  width: 80%;
+  position: fixed; 
+  margin-left: 250px;
+  margin-right: 100px;
+}
