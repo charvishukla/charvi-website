@@ -1,11 +1,11 @@
 import logo from "./logo.png";
 import SideNav from "./SideNav";
-import styles from './page.module.css';
-import Image from 'next/image'
+import styles from "./page.module.css";
+import Image from "next/image";
 export default function Home(props) {
   return (
     <div className={styles.App}>
-      <SideNav name="home" className={styles.nav}/>
+      <SideNav name="home" className={styles.nav} />
 
       <div className={styles.container}>
         <header className={styles.Name}>
@@ -29,10 +29,16 @@ export default function Home(props) {
             Email: shukla[DOT]charvie[AT]gmail[DOT]com
             <br />
             <br />
-            Github: <a href="https://github.com/charvishukla">github.com/charvishukla </a>
+            Github:{" "}
+            <a href="https://github.com/charvishukla">
+              github.com/charvishukla{" "}
+            </a>
             <br />
             <br />
-            Linkedin: <a href="https://www.linkedin.com/in/charvi-shukla/">linkedin.com/in/charvi-shukla</a>
+            Linkedin:{" "}
+            <a href="https://www.linkedin.com/in/charvi-shukla/">
+              linkedin.com/in/charvi-shukla
+            </a>
           </p>
         </div>
 
@@ -62,17 +68,46 @@ export default function Home(props) {
             </ul>
             <h4>SuPerPM, A Surgical Perception Framework</h4>
             <ul>
-              <li>Fine tuned Lepard, a point cloud matching model for rigid and deformable scenes, over a physically constrained simulation dataset</li>
-              <li>Implemented a custom visualization algorithm using Open3D to visualize 3D point clouds and their correspondences</li>
+              <li>
+                Fine tuned Lepard, a point cloud matching model for rigid and
+                deformable scenes, over a physically constrained simulation
+                dataset
+              </li>
+              <li>
+                Implemented a custom visualization algorithm using Open3D to
+                visualize 3D point clouds and their correspondences
+              </li>
             </ul>
           </div>
 
           <div className="Sub-section-item">
             <h3>WiseCounsel.ai</h3>
+            <ul>
+              <li>
+                Developed core negotiation engine CLI for WiseCounsel's
+                end-to-end deal-making platform, enabling structured
+                bi-directional communication between clients and counterparties
+              </li>
+              <li>
+                Enhanced CLI functionality to parse and reconstruct highly
+                structured legal agreements, orchestrating multi-clause
+                negotiations by managing LLM inputs/outputs and agreement
+                lifecycle
+              </li>
+            </ul>
           </div>
 
           <div className="Sub-section-item">
             <h3>Tutoring and Supplemental Instruction</h3>
+            <h4>Academic Achievement Hub, MATH 18: Linear Algebra</h4>
+            <ul>
+              <li>Collaborated with Teaching Assistants to conduct 5 weekly discussion sessions for 20-30 undergraduates each, reinforcing Linear Algebra lecture content among students</li>
+              <li>Orchestrated supplemental instruction in groups of 10 students, engaging students in problem-solving and doubt clarifications</li>
+            </ul>
+            <h4>Computer Science and Engineering, CSE 30: Computer Organization and Systems Programming</h4>
+            <ul>
+              <li>Conducted 4.5 hours of weekly tutoring for students, debugging C and ARM Assembly code and re-iterating core class concepts</li>
+            </ul>
           </div>
         </div>
 
