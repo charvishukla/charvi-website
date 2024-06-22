@@ -1,4 +1,4 @@
-import logo from "./logo.png";
+import logo from "./logo.jpg";
 import SideNav from "./SideNav";
 import styles from "./page.module.css";
 import Image from "next/image";
@@ -15,15 +15,15 @@ export default function Home(props) {
           <Image src={logo} width={500} height={500} alt="Logo" />
 
           <p className="about">
-            I am an undergraduate student at UC San Diego, pursuing a dual
+            I am a fourth year undergraduate student at UC San Diego, pursuing a dual
             degree in Mathematics-Computer Science and Cognitive Science with a
             specialization in Machine Learning and Neural Computation. My
             research interests lie in medical and autonomous driving
             applications of Computer Vision. At UCSD, I have worked as an
-            instructional assistant for the Computer Science and Engineering
-            Department (CSE 30), and as a Supplemental Instruction leader for
-            the Mathematics department (MATH 18). I also work as a research
-            student at the Advanced Robotics and Controls Lab at UCSD.
+            instructional assistant for the <a href="https://cse.ucsd.edu">Computer Science and Engineering
+            Department</a> (CSE 30), and as a Supplemental Instruction leader for
+            the Mathematics department (MATH 18) through the <a href="https://aah.ucsd.edu">Academic Achievement Hub</a>. 
+            I also work as an undergraduate student researcher at the <a href="https://www.ucsdarclab.com">Advanced Robotics and Controls Lab</a> at UCSD.
             <br />
             <br />
             Email: shukla[DOT]charvie[AT]gmail[DOT]com
@@ -50,7 +50,7 @@ export default function Home(props) {
           <div className="Sub-section-item">
             <h3>Advanced Robotics and Controls Lab</h3>
             <h4>LLM fine-tuning</h4>
-            <ul>
+            <ul className="resume-pts">
               <li>
                 Processed a large medical-assessments dataset and used LoRA
                 finetuning to fine tune Meta Llama 2 and Google Gemma models
@@ -67,7 +67,7 @@ export default function Home(props) {
               </li>
             </ul>
             <h4>SuPerPM, A Surgical Perception Framework</h4>
-            <ul>
+            <ul className="resume-pts">
               <li>
                 Fine tuned Lepard, a point cloud matching model for rigid and
                 deformable scenes, over a physically constrained simulation
@@ -82,7 +82,7 @@ export default function Home(props) {
 
           <div className="Sub-section-item">
             <h3>WiseCounsel.ai</h3>
-            <ul>
+            <ul className="resume-pts">
               <li>
                 Developed core negotiation engine CLI for WiseCounsel's
                 end-to-end deal-making platform, enabling structured
@@ -97,18 +97,6 @@ export default function Home(props) {
             </ul>
           </div>
 
-          <div className="Sub-section-item">
-            <h3>Tutoring and Supplemental Instruction</h3>
-            <h4>Academic Achievement Hub, MATH 18: Linear Algebra</h4>
-            <ul>
-              <li>Collaborated with Teaching Assistants to conduct 5 weekly discussion sessions for 20-30 undergraduates each, reinforcing Linear Algebra lecture content among students</li>
-              <li>Orchestrated supplemental instruction in groups of 10 students, engaging students in problem-solving and doubt clarifications</li>
-            </ul>
-            <h4>Computer Science and Engineering, CSE 30: Computer Organization and Systems Programming</h4>
-            <ul>
-              <li>Conducted 4.5 hours of weekly tutoring for students, debugging C and ARM Assembly code and re-iterating core class concepts</li>
-            </ul>
-          </div>
         </div>
 
         <div className="Projects">
@@ -116,7 +104,7 @@ export default function Home(props) {
 
           <div className="Sub-section-item">
             <h3>WaveIT</h3>
-            <ul>
+            <ul className="resume-pts">
               <li>
                 Worked in a team of 2 to develop an IoT device for individuals
                 with hearing disabilities
