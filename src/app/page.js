@@ -2,6 +2,8 @@ import logo from "./logo.jpg";
 import SideNav from "./SideNav";
 import styles from "./page.module.css";
 import Image from "next/image";
+import Link from 'next/link';
+
 export default function Home(props) {
   return (
     <div className={styles.App}>
@@ -116,9 +118,16 @@ export default function Home(props) {
               </li>
             </ul>
           </div>
-
           <div className="Sub-section-item"></div>
         </div>
+
+      <div className="Resume">
+        <h2>Resume</h2>
+        <Link className="download-link" href="charvi-resume.pdf" locale={false} download="resume-charvi-shukla.pdf">
+                Download Resume
+            </Link>
+      </div>
+
       </div>
     </div>
   );

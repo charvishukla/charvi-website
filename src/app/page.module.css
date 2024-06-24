@@ -3,6 +3,34 @@
   position: absolute;
 }
 
+.home {
+  width: 250px; 
+  position: fixed; 
+  height: 100vh;
+  background-color: #f4f4f4; 
+  transition: width 0.5s;
+}
+
+@media (max-width: 768px) {
+  .home {
+    width: 100%; 
+    height: auto; 
+  }
+}
+
+.download-link {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none; /* Removes underline from the link */
+}
+
+
+.download-link:hover {
+  background-color: #0056b3;
+}
+
 .Name {
   text-align: center;
 }
@@ -26,6 +54,9 @@
 .Introduction img {
   width: 23%;
   height: 23%;
+  min-width: 300px;  
+  min-height: 300px;
+  object-fit: cover;
   display: inline-block;
 }
 .container {
