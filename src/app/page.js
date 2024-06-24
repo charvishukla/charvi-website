@@ -123,7 +123,7 @@ export default function Home(props) {
 
       <div className="Resume">
         <h2>Resume</h2>
-        <a className="download-link" href="public/charvi-resume.pdf" locale={false} download="charvi-resume.pdf">
+        <a className="download-link" href="/charvi-resume.pdf" >
                 Download Resume
             </a>
       </div>
