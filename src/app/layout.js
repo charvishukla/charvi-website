@@ -5,7 +5,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   icons: {
-    icon: '/icon.png', // /public path
+    icon: '/icon.png', 
   },
   title: "Charvi Shukla",
   description: "Charvi's Portfolio Website!",

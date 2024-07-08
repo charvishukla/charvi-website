@@ -1,21 +1,16 @@
 import React from 'react';
 import styles from './SideNav.module.css';
+import Link from 'next/link';
 
-
-const SideNav = (props) => {
-return (
-    <div className={styles.sideNav}>
-    <a className={styles.item} href='#section'> About </a>
-    <br/>
-    <br/>
-    <a className={styles.item} href='#section'> Projects </a>
-    <br/>
-    <br/>
-    <a className={styles.item} href='#section'> Experience </a>
-    <br/>
-    <br/>
-    <a className={styles.item} href='#section'> Resume </a>
-    </div>  
- );
+const SideNav = () => {
+  return (
+    <nav className={styles.sideNav}>
+      <Link href="#about" className={styles.item}>About</Link>
+      <Link href="#experience" className={styles.item}>Experience</Link>
+      <Link href="#projects" className={styles.item}>Projects</Link>
+      <Link href="#resume" className={styles.item}>Resume</Link>
+    </nav>
+  );
 };
+
 export default SideNav;
