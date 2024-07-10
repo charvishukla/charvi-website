@@ -140,7 +140,6 @@ export default function Home() {
                       <li className={styles.linkItem}>Link to the <a href="https://github.com/acmucsd/chrome-extension-workshop/tree/main/transcriptsummerizer">Transcript Summarizer Github</a></li>
                   </ul>
                 </ul>
-
               </div>
               <div className={styles.cardSubsection}>
                 <h4>ACM Hack Project Mentor</h4>
@@ -157,6 +156,22 @@ export default function Home() {
                 </ul>
               </div>
             </div>
+            <div className={styles.card}>
+              <h3>Tutoring and Supplemental Instruction</h3>
+              <div className={styles.cardSubsection}>
+              <h4>Academic Achievement Hub, MATH 18: Linear Algebra</h4>
+              <ul className="${styles.list} ${styles.listLevel1}">
+              <li className={styles.listItem}>Collaborated with Teaching Assistants to conduct 5 weekly discussion sessions for 20-30 undergraduates each, reinforcing Linear Algebra lecture content among students</li>
+              <li className={styles.listItem}>Orchestrated supplemental instruction in groups of 10 students, engaging students in problem-solving and doubt clarifications </li>
+              </ul>
+              <h4>Computer Science and Engineering, CSE 30: Computer Organization and Systems Programming</h4>
+              <ul className="${styles.list} ${styles.listLevel1}">
+              <li className={styles.listItem}>Conducted 4.5 hours of weekly tutoring for students, debugging C and ARM Assembly code and re-iterating core class concepts
+              </li>
+              </ul>
+              </div>
+            </div>
+
           </div>
         </section>
 
