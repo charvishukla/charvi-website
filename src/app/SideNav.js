@@ -1,10 +1,12 @@
-import React from 'react';
-import styles from './SideNav.module.css';
-import Link from 'next/link';
+'use client';
 
-const SideNav = () => {
+import React from 'react';
+import Link from 'next/link';
+import styles from "./page.module.css";
+
+const SideNav = ({ isOpen, isMobile }) => {
   return (
-    <nav className={styles.sideNav}>
+    <nav className={`${styles.sideNav} ${isMobile && isOpen ? styles.open : ''}`}>
       <Link href="#about" className={styles.item}>About</Link>
       <Link href="#experience" className={styles.item}>Experience</Link>
       <Link href="#projects" className={styles.item}>Projects</Link>

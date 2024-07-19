@@ -1,13 +1,39 @@
+'use client';
 import Image from "next/image";
 import logo from "./logo.jpg";
 import styles from "./page.module.css";
 import SideNav from "./SideNav";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
+import React, { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <div className={styles.app}>
-      <SideNav />
+      {isMobile && (
+        <button className={styles.menuButton} onClick={toggleMenu}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      )}
+      <SideNav isOpen={isMenuOpen} isMobile={isMobile} />
       <main className={styles.main}>
         <section id="about" className={styles.section}>
           <h1 className={styles.name}>Charvi Shukla</h1>
