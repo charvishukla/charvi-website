@@ -54,10 +54,13 @@
   color: #dd8ea4;
 }
 
+
 .cardContainer {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  max-width: 800px;  
+  margin: 0 auto;   
 }
 
 .card {
@@ -66,6 +69,8 @@
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
+  width: 90%;        
+  margin: 0 auto;   
 }
 
 .cardHeader {
@@ -259,7 +264,9 @@
 
   .card {
     padding: 15px;
+    width: 95%;
   }
+  
 }
 
 @media (max-width: 480px) {
@@ -278,10 +285,58 @@
 
   .card {
     padding: 10px;
+    width: 100%;
   }
 
   .githubLink {
     top: 10px;
     right: 10px;
+  }
+}
+
+@media (max-width: 390px) {
+  .main {
+    padding: 9px;
+  }
+  .introduction{
+    width: 95%;
+  }
+  .card {
+    width: 85%;
+    padding: 10px 10px;
+  }
+  
+  .cardHeader h3 {
+    font-size: 1.2rem;
+  }
+  
+  .card h4 {
+    font-size: 1.1rem;
+  }
+  
+  .card ul {
+    padding-left: 15px;
+  }
+  
+  .card li {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .card {
+    padding: 10px;
+  }
+  
+  .cardHeader h3 {
+    font-size: 1.1rem;
+  }
+  
+  .card h4 {
+    font-size: 1rem;
+  }
+  
+  .card li {
+    font-size: 0.85rem;
   }
 }

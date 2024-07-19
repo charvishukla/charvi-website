@@ -24,16 +24,20 @@ export default function Home() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className={styles.app}>
-      {isMobile && (
+       {isMobile && (
         <button className={styles.menuButton} onClick={toggleMenu}>
           <span></span>
           <span></span>
           <span></span>
         </button>
       )}
-      <SideNav isOpen={isMenuOpen} isMobile={isMobile} />
+      <SideNav isOpen={isMenuOpen} isMobile={isMobile} onClose={closeMenu} />
       <main className={styles.main}>
         <section id="about" className={styles.section}>
           <h1 className={styles.name}>Charvi Shukla</h1>
