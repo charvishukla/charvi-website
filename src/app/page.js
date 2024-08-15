@@ -191,12 +191,21 @@ export default function Home() {
               <div className={styles.cardSubsection}>
               <h4>Academic Achievement Hub, MATH 18: Linear Algebra</h4>
               <ul className="${styles.list} ${styles.listLevel1}">
+              <li>Supplemental Instruction leader in Spring 2022, Winter 2022 and Fall 2023</li>
               <li className={styles.listItem}>Collaborated with Teaching Assistants to conduct 5 weekly discussion sessions for 20-30 undergraduates each, reinforcing Linear Algebra lecture content among students</li>
               <li className={styles.listItem}>Orchestrated supplemental instruction in groups of 10 students, engaging students in problem-solving and doubt clarifications </li>
               </ul>
-              <h4>Computer Science and Engineering, CSE 30: Computer Organization and Systems Programming</h4>
+              <h4>Computer Science and Engineering Tutor</h4>
               <ul className="${styles.list} ${styles.listLevel1}">
-              <li className={styles.listItem}>Conducted 4.5 hours of weekly tutoring for students, debugging C and ARM Assembly code and re-iterating core class concepts
+              <li className={styles.listItem}> Spring 2024: CSE 30, Computer Organization and Systems Programming
+                  <ul className="${styles.list} ${styles.listLevel2} ${styles.linkList}">
+                      <li className={styles.linkItem}> Conducted 4.5 hours of weekly tutoring for students, debugging C and ARM Assembly code and re-iterating core class concepts </li>
+                  </ul>
+              </li>
+              <li> Fall 2023: CSE 105, Theory of Computation
+              <ul className="${styles.list} ${styles.listLevel2} ${styles.linkList}">
+              <li className={styles.linkItem}>Tasks include holding office hours, proctoring and grading assignments.</li>
+                </ul>
               </li>
               </ul>
               </div>
