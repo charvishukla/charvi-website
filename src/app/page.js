@@ -40,7 +40,7 @@ export default function Home() {
       <SideNav isOpen={isMenuOpen} isMobile={isMobile} onClose={closeMenu} />
       <main className={styles.main}>
         <section id="about" className={styles.section}>
-          <h1 className={styles.name}>Charvi Shukla</h1>
+          <h1 className={styles.name}>Charvi Shukla 👩‍💻</h1>
           <div className={styles.introduction}>
             <Image
               src={logo}
@@ -51,24 +51,25 @@ export default function Home() {
             />
             <div className={styles.aboutContent}>
               <p>
-                I am a fourth year undergraduate student at UC San Diego,
+               👋🏽 Hi! I am a fourth year undergraduate student at UC San Diego,
                 pursuing a dual degree in Mathematics-Computer Science and
                 Cognitive Science with a specialization in Machine Learning and
-                Neural Computation. My research interests lie in medical and
+                Neural Computation.
+              </p>
+              <p> My research interests lie in medical and
                 autonomous driving applications of Computer Vision. At UCSD, I
                 have worked as an instructional assistant for the{" "}
                 <a href="https://cse.ucsd.edu">
                   Computer Science and Engineering Department
                 </a>{" "}
-                (CSE 30), and as a Supplemental Instruction leader for the
+                (CSE 30, CSE 105), and as a Supplemental Instruction leader for the
                 Mathematics department (MATH 18) through the{" "}
                 <a href="https://aah.ucsd.edu">Academic Achievement Hub</a>. I
                 also work as an undergraduate student researcher at the{" "}
-                <a href="https://www.ucsdarclab.com">
+                <a href="https://www.ucsda`rclab.com">
                   Advanced Robotics and Controls Lab
                 </a>{" "}
-                at UCSD.
-              </p>
+                at UCSD.</p>
               <div className={styles.socialLinks}>
                 <a
                   href="https://github.com/charvishukla"
@@ -93,7 +94,7 @@ export default function Home() {
           <h2>Experience</h2>
           <div className={styles.cardContainer}>
             <div className={styles.card}>
-              <h3>Advanced Robotics and Controls Lab @ UCSD</h3>
+              <h3> 🤖 Advanced Robotics and Controls Lab @ UCSD</h3>
               <div className={styles.cardSubsection}>
                 <h4>LLM fine-tuning</h4>
                 <ul>
@@ -129,7 +130,7 @@ export default function Home() {
               </div>
             </div>
             <div className={styles.card}>
-              <h3>WiseCounsel.ai</h3>
+              <h3> ⚖️ WiseCounsel.ai</h3>
               <ul>
                 <li>
                   Developed core negotiation engine CLI for WiseCounsel's
@@ -146,7 +147,7 @@ export default function Home() {
               </ul>
             </div>
             <div className={styles.card}>
-              <h3>Association of Computing Machinery at UC San Diego</h3>
+              <h3>🔶 Association of Computing Machinery at UC San Diego</h3>
               <div className={styles.cardSubsection}>
                 <h4>Hack Technical Events Director</h4>
                 <ul className="${styles.list} ${styles.listLevel1}">
@@ -187,7 +188,7 @@ export default function Home() {
               </div>
             </div>
             <div className={styles.card}>
-              <h3>Tutoring and Supplemental Instruction</h3>
+              <h3>📚 Tutoring and Supplemental Instruction</h3>
               <div className={styles.cardSubsection}>
               <h4>Academic Achievement Hub, MATH 18: Linear Algebra</h4>
               <ul className="${styles.list} ${styles.listLevel1}">
@@ -215,7 +216,7 @@ export default function Home() {
         </section>
 
         <section id="projects" className={styles.section}>
-          <h2>Projects</h2>
+          <h2>🚀 Projects</h2>
           <div className={styles.cardContainer}>
             <div className={styles.card}>
               <div className={styles.cardHeader}>
@@ -274,7 +275,7 @@ export default function Home() {
         </section>
 
         <section id="resume" className={styles.section}>
-          <h2>Resume</h2>
+          <h2>🔱 Resume</h2>
           <a
             href="/charvi-resume.pdf"
             download
