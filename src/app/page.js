@@ -91,7 +91,7 @@ export default function Home() {
         </section>
 
         <section id="experience" className={styles.section}>
-          <h2>Experience</h2>
+          <h2>🤗 Experience</h2>
           <div className={styles.cardContainer}>
             <div className={styles.card}>
               <h3> 🤖 Advanced Robotics and Controls Lab @ UCSD</h3>
