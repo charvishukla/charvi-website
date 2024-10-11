@@ -104,10 +104,6 @@ export default function Home() {
                     with 7 billion parameters
                   </li>
                   <li>
-                    Used ROUGE, BERT, and Bleu Scores each to evaluate and
-                    compare the model's performance against human evaluators
-                  </li>
-                  <li>
                     Deployed CUDA based Docker containers to efficiently train
                     models using the PyTorch DataParallel class, leveraging 4
                     GPUs in parallel
@@ -118,13 +114,11 @@ export default function Home() {
                 <h4>SuPerPM, A Surgical Perception Framework</h4>
                 <ul>
                   <li>
-                    Fine tuned Lepard, a point cloud matching model for rigid
-                    and deformable scenes, over a physically constrained
-                    simulation dataset
+                    Fine-tuned and debugged Lepard point cloud matching model on a physically constrained simulation dataset of deformed
+                    point clouds and implemented custom visualization algorithms in python to assess match quality
                   </li>
                   <li>
-                    Implemented a custom visualization algorithm using Open3D to
-                    visualize 3D point clouds and their correspondences
+                    Preprint link: https://arxiv.org/abs/2309.13863
                   </li>
                 </ul>
               </div>
@@ -209,6 +203,12 @@ export default function Home() {
                 </ul>
               </li>
               </ul>
+              <h4>Mathematics Group Tutoring</h4>
+              <ul className="${styles.list} ${styles.listLevel1}">
+              <li>Multivariable Calculus group tutor for the Department of Mathematics at UCSD</li>
+              <li className={styles.listItem}> Tasks include holding office hours and assisting TAs in mandatory discussion sessions </li>
+              <li className={styles.listItem}> Position begins in Fall 2024 </li>
+              </ul>
               </div>
             </div>
 
@@ -272,6 +272,30 @@ export default function Home() {
               </ul>
             </div>
           </div>
+        </section>
+        <section id="publications" className={styles.section}>
+        <h2>🏆 Publications</h2>
+        <div className={styles.cardContainer}>
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h3>
+              Enhanced Vehicle Detection and Counting Using YOLOv8
+              </h3>
+
+            </div>
+            <ul>
+              <li>
+              Agrawal, A., Shukla, C., & Shukla, P. (2024). ”Enhanced Vehicle Detection and Counting Using YOLOv8 with
+Augmented Data and Optimized Object Grouping.” Presented at the MANIT Bhopal Conference, to be published in
+Springer Book Series
+              </li>
+              <li>
+              Proposed a novel object grouping mechanism and pre-processing techniques, which lead to reduction in inference time
+              from 38 to 25 ms
+              </li>
+            </ul>
+          </div>
+        </div>
         </section>
 
         <section id="resume" className={styles.section}>
