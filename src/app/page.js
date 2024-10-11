@@ -127,16 +127,14 @@ export default function Home() {
               <h3> ⚖️ WiseCounsel.ai</h3>
               <ul>
                 <li>
-                  Developed core negotiation engine CLI for WiseCounsel's
-                  end-to-end deal-making platform, enabling structured
-                  bi-directional communication between clients and
-                  counterparties
+                Developed core Command Line Interface for WiseCounsel’s negotiation platform, facilitating bi-directional communication between clients and counterparties using python
                 </li>
                 <li>
-                  Enhanced CLI functionality to parse and reconstruct highly
-                  structured legal agreements, orchestrating multi-clause
-                  negotiations by managing LLM inputs/outputs and agreement
-                  lifecycle
+                Designed and engineered a deterministic state machine to enable verification and E2E testing of negotiation workflow
+
+                </li>
+                <li>
+                Orchestrated multi-clause negotiations by managing 10+ inputs/outputs within a agreement lifecycle from 4 distinct AI Agents to reconstruct legal agreements
                 </li>
               </ul>
             </div>
@@ -267,7 +265,8 @@ export default function Home() {
                   API for image generation
                 </li>
                 <li>
-                Ensured robust application performance through comprehensive testing strategies, including unit testing, behavior-driven development (BDE) testing, and end-to-end (E2E) testing.
+                Ensured robust performance through comprehensive testing, including Java unit testing, test and build automation
+using GitHub, behavior-driven development (BDE) testing, and end-to-end (E2E) testing with mocking
                 </li>
               </ul>
             </div>
