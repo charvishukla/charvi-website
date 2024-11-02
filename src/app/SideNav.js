@@ -17,6 +17,7 @@ const SideNav = ({ isOpen, isMobile, onClose }) => {
       <Link href="#experience" className={styles.item} onClick={handleLinkClick}>Experience</Link>
       <Link href="#projects" className={styles.item} onClick={handleLinkClick}>Projects</Link>
       <Link href="#resume" className={styles.item} onClick={handleLinkClick}>Resume</Link>
+      <Link href="blog" className={styles.item} onClick={handleLinkClick}>Blog</Link>
     </nav>
   );
 };
