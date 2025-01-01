@@ -4,7 +4,9 @@ import Image from "next/image";
 import apple from "./Apple-Logosu.png";
 import brain from "./brain.png";
 import wise from "./wise.png";
-
+import cse from "./cse.png";
+import TLC from "./TLC.jpg";
+import ucsd from "./ucsd.png";
 
 export default function HomePage() {
   return (
@@ -57,8 +59,7 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-        
-        
+
         <div className={styles.experienceItem}>
           <Image
             src={brain}
@@ -77,7 +78,7 @@ export default function HomePage() {
               June 2025 - September 2025
             </div>
             <p className={styles.experienceDescription}>
-            Incoming full-time intern for Summer 2025. 
+              Incoming full-time intern for Summer 2025.
             </p>
           </div>
         </div>
@@ -100,15 +101,22 @@ export default function HomePage() {
               November 2023 - April 2024
             </div>
             <ul className={styles.experienceDescription}>
-            <li>Built CLI for WiseCounsel's negotiation platform enabling client-counterparty communication </li>
-            <li>Designed a deterministic state machine to enable verification and E2E testing of negotiation workflow</li>
-            <li>Orchestrated multi-clause negotiations by managing 10+ inputs/outputs within a agreement lifecycle from 4 distinct AI
-            Agents to reconstruct legal agreements</li>
+              <li>
+                Built CLI for WiseCounsel's negotiation platform enabling
+                client-counterparty communication{" "}
+              </li>
+              <li>
+                Designed a deterministic state machine to enable verification
+                and E2E testing of negotiation workflow
+              </li>
+              <li>
+                Orchestrated multi-clause negotiations by managing 10+
+                inputs/outputs within a agreement lifecycle from 4 distinct AI
+                Agents to reconstruct legal agreements
+              </li>
             </ul>
           </div>
         </div>
-
-
       </section>
 
       <section className={styles.research}>
@@ -163,6 +171,72 @@ export default function HomePage() {
             <a href="#" className={styles.projectLink}>
               Arxiv
             </a>{" "}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.teaching}>
+        <h2 className={styles.sectionTitle}>Teaching Experience</h2>
+
+        <div className={styles.teachingRole}>
+        <Image
+            src={cse}
+            alt="CSE Logo"
+            className={styles.teachingLogoCSE}
+          />
+          <div className={styles.teachingDetails}>
+            <div className={styles.teachingRoleTitle}>
+              Instructional Assistant
+            </div>
+            <div className={styles.teachingDepartment}>
+              Computer Science and Engineering Department, UCSD
+            </div>
+            <ul className={styles.teachingCourseList}>
+              <li>Theory of Computation (CSE 105), Fall 2024 with Professor Mia Minnes</li>
+              <li>Computer Organization and Systems Programming (CSE 30), Spring 2024 with Professor Keith Muller and Professor Paul Cao</li>
+            </ul>
+          </div>
+        </div>
+
+
+
+        <div className={styles.teachingRole}>
+        <Image
+            src={ucsd}
+            alt="ucsd Logo"
+            className={styles.teachingLogoMath}
+          />
+          <div className={styles.teachingDetails}>
+            <div className={styles.teachingRoleTitle}>
+              Instructional Assistant
+            </div>
+            <div className={styles.teachingDepartment}>
+              Department of Mathematics, UCSD
+            </div>
+            <ul className={styles.teachingCourseList}>
+              <li>Calculus III (MATH 10C), Fall 2024 with Professor Yosuf Habib</li>
+            </ul>
+          </div>
+        </div>
+
+
+
+        <div className={styles.teachingRole}>
+        <Image
+            src={TLC}
+            alt="TLC Logo"
+            className={styles.teachingLogoTLC}
+          />
+          <div className={styles.teachingDetails}>
+            <div className={styles.teachingRoleTitle}>
+              Supplemental Instruction Leader
+            </div>
+            <div className={styles.teachingDepartment}>
+              Academic Achievement Hub at UCSD
+            </div>
+            <ul className={styles.teachingCourseList}>
+              <li> Linear Algebra (MATH 18) in Spring 2022, Fall 2022, Winter 2023</li>
+            </ul>
           </div>
         </div>
       </section>
