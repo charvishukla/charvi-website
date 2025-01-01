@@ -28,11 +28,11 @@ export default function HomePage() {
             Resume
           </a>{" "}
           /
-          <a href="#" className={styles.link}>
+          <a href="https://www.linkedin.com/in/charvi-shukla/" className={styles.link}>
             LinkedIn
           </a>{" "}
           /
-          <a href="#" className={styles.link}>
+          <a href="https://github.com/charvishukla" className={styles.link}>
             Github
           </a>
         </div>
@@ -123,12 +123,7 @@ export default function HomePage() {
         <h2 className={styles.sectionTitle}>Research</h2>
         <p className={styles.sectionDescription}>
           My research interests lie in medical and autonomous driving
-          applications of Computer Vision. At UCSD, I had the opportunity to
-          work as an undergraduate student researcher at the{" "}
-          <a href="https://www.ucsdarclab.com">
-            Advanced Robotics and Controls Lab
-          </a>{" "}
-          under the guidance of my mentor Dr. Shan Lin.
+          applications of Computer Vision.
         </p>
 
         <div className={styles.projects}>
@@ -164,13 +159,7 @@ export default function HomePage() {
               Springer Book Series: Algorithms for Intelligent Systems, A.
               Agrawal and C. Shukla
             </p>
-            <a href="#" className={styles.projectLink}>
-              Project Page
-            </a>{" "}
-            /
-            <a href="#" className={styles.projectLink}>
-              Arxiv
-            </a>{" "}
+            
           </div>
         </div>
       </section>
@@ -192,8 +181,8 @@ export default function HomePage() {
               Computer Science and Engineering Department, UCSD
             </div>
             <ul className={styles.teachingCourseList}>
-              <li>Theory of Computation (CSE 105), Fall 2024 with Professor Mia Minnes</li>
-              <li>Computer Organization and Systems Programming (CSE 30), Spring 2024 with Professor Keith Muller and Professor Paul Cao</li>
+              <li><b>Theory of Computation (CSE 105)</b>, Fall 2024 with Professor Mia Minnes</li>
+              <li><b>Computer Organization and Systems Programming (CSE 30)</b>, Spring 2024 with Professor Keith Muller and Professor Paul Cao</li>
             </ul>
           </div>
         </div>
@@ -214,7 +203,7 @@ export default function HomePage() {
               Department of Mathematics, UCSD
             </div>
             <ul className={styles.teachingCourseList}>
-              <li>Calculus III (MATH 10C), Fall 2024 with Professor Yosuf Habib</li>
+              <li><b>Calculus III (MATH 10C)</b>, Fall 2024 with Professor Yosuf Habib</li>
             </ul>
           </div>
         </div>
@@ -235,7 +224,7 @@ export default function HomePage() {
               Academic Achievement Hub at UCSD
             </div>
             <ul className={styles.teachingCourseList}>
-              <li> Linear Algebra (MATH 18) in Spring 2022, Fall 2022, Winter 2023</li>
+              <li> <b>Linear Algebra (MATH 18)</b> in Spring 2022, Fall 2022, Winter 2023</li>
             </ul>
           </div>
         </div>
