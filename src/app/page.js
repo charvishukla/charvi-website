@@ -19,20 +19,25 @@ export default function HomePage() {
           Science with a specialization in Machine Learning and Neural
           Computation.
         </p>
+        <p className={styles.description}>Email: cshukla [at] ucsd [dot] edu</p>
         <div className={styles.links}>
-          <a href="mailto:example@example.com" className={styles.link}>
-            Email
-          </a>{" "}
-          /
-          <a href="#" className={styles.link}>
+          <a href="/charvi-resume.pdf" target="_blank" className={styles.link}>
             Resume
           </a>{" "}
           /
-          <a href="https://www.linkedin.com/in/charvi-shukla/" className={styles.link}>
+          <a
+            href="https://www.linkedin.com/in/charvi-shukla/"
+            target="_blank"
+            className={styles.link}
+          >
             LinkedIn
           </a>{" "}
           /
-          <a href="https://github.com/charvishukla" className={styles.link}>
+          <a
+            href="https://github.com/charvishukla"
+            target="_blank"
+            className={styles.link}
+          >
             Github
           </a>
         </div>
@@ -100,21 +105,11 @@ export default function HomePage() {
               {" "}
               November 2023 - April 2024
             </div>
-            <ul className={styles.experienceDescription}>
-              <li>
-                Built CLI for WiseCounsel's negotiation platform enabling
-                client-counterparty communication{" "}
-              </li>
-              <li>
-                Designed a deterministic state machine to enable verification
-                and E2E testing of negotiation workflow
-              </li>
-              <li>
-                Orchestrated multi-clause negotiations by managing 10+
-                inputs/outputs within a agreement lifecycle from 4 distinct AI
-                Agents to reconstruct legal agreements
-              </li>
-            </ul>
+            <p className={styles.experienceDescription}>
+              {" "}
+              Designed a deterministic state machine to enable verification and
+              E2E testing of negotiation workflow
+            </p>
           </div>
         </div>
       </section>
@@ -141,9 +136,15 @@ export default function HomePage() {
               <a href="https://www.shanlin.org">Dr. Shan Lin</a> on the
               following projects:
             </p>
-            <ul>
-              <li>1</li>
-              <li>1</li>
+            <ul className={styles.experienceDescription}>
+              <li>
+                Surgical Perception Framework (SuPerPM) -- Worked on improving
+                dense matches between point clouds
+              </li>
+              <li>
+                Medical LLM Fine Tuning -- LoRA Fine tuning followed by human
+                evaluation
+              </li>
             </ul>
           </div>
 
@@ -159,7 +160,6 @@ export default function HomePage() {
               Springer Book Series: Algorithms for Intelligent Systems, A.
               Agrawal and C. Shukla
             </p>
-            
           </div>
         </div>
       </section>
@@ -168,11 +168,7 @@ export default function HomePage() {
         <h2 className={styles.sectionTitle}>Teaching Experience</h2>
 
         <div className={styles.teachingRole}>
-        <Image
-            src={cse}
-            alt="CSE Logo"
-            className={styles.teachingLogoCSE}
-          />
+          <Image src={cse} alt="CSE Logo" className={styles.teachingLogoCSE} />
           <div className={styles.teachingDetails}>
             <div className={styles.teachingRoleTitle}>
               Instructional Assistant
@@ -181,16 +177,20 @@ export default function HomePage() {
               Computer Science and Engineering Department, UCSD
             </div>
             <ul className={styles.teachingCourseList}>
-              <li><b>Theory of Computation (CSE 105)</b>, Fall 2024 with Professor Mia Minnes</li>
-              <li><b>Computer Organization and Systems Programming (CSE 30)</b>, Spring 2024 with Professor Keith Muller and Professor Paul Cao</li>
+              <li>
+                <b>Theory of Computation (CSE 105)</b>, Fall 2024 with Professor
+                Mia Minnes
+              </li>
+              <li>
+                <b>Computer Organization and Systems Programming (CSE 30)</b>,
+                Spring 2024 with Professor Keith Muller and Professor Paul Cao
+              </li>
             </ul>
           </div>
         </div>
 
-
-
         <div className={styles.teachingRole}>
-        <Image
+          <Image
             src={ucsd}
             alt="ucsd Logo"
             className={styles.teachingLogoMath}
@@ -203,19 +203,16 @@ export default function HomePage() {
               Department of Mathematics, UCSD
             </div>
             <ul className={styles.teachingCourseList}>
-              <li><b>Calculus III (MATH 10C)</b>, Fall 2024 with Professor Yosuf Habib</li>
+              <li>
+                <b>Calculus III (MATH 10C)</b>, Fall 2024 with Professor Yosuf
+                Habib
+              </li>
             </ul>
           </div>
         </div>
 
-
-
         <div className={styles.teachingRole}>
-        <Image
-            src={TLC}
-            alt="TLC Logo"
-            className={styles.teachingLogoTLC}
-          />
+          <Image src={TLC} alt="TLC Logo" className={styles.teachingLogoTLC} />
           <div className={styles.teachingDetails}>
             <div className={styles.teachingRoleTitle}>
               Supplemental Instruction Leader
@@ -224,7 +221,11 @@ export default function HomePage() {
               Academic Achievement Hub at UCSD
             </div>
             <ul className={styles.teachingCourseList}>
-              <li> <b>Linear Algebra (MATH 18)</b> in Spring 2022, Fall 2022, Winter 2023</li>
+              <li>
+                {" "}
+                <b>Linear Algebra (MATH 18)</b> in Spring 2022, Fall 2022,
+                Winter 2023
+              </li>
             </ul>
           </div>
         </div>

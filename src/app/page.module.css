@@ -1,4 +1,3 @@
-
 /* pages/index.module.css */
 .container {
   font-family: Arial, sans-serif;
@@ -156,7 +155,7 @@
 .teachingRole {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .teachingLogoCSE {
@@ -190,7 +189,7 @@
 .teachingRoleTitle {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
 }
 
 .teachingDepartment {
