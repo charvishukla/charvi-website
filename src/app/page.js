@@ -21,7 +21,7 @@ export default function HomePage() {
         </p>
         <p className={styles.description}>Email: cshukla [at] ucsd [dot] edu</p>
         <div className={styles.links}>
-          <a href="/charvi-resume.pdf" target="_blank" className={styles.link}>
+          <a href="/charvi_resume.pdf" target="_blank" className={styles.link}>
             Resume
           </a>{" "}
           /
