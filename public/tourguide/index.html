@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--
+  ============================================================
+  Tourguide Robot — project site
+  ------------------------------------------------------------
+  Page order: top bar → 3D hero → Robot → Mapping → Landmarks
+              → Navigation → footer → scripts.
+  Styles live in styles.css. Images and videos live in media/.
+  ============================================================
+-->
+
+<!-- ===================== HEAD: title, fonts, styles ===================== -->
+<title>Tourguide Robot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Unbounded:wght@500;700&family=Manrope:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/tourguide/styles.css?v=7">
+
+<!-- ===================== TOP BAR: brand + section links ===================== -->
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand-dot"></span>Tourguide</a>
+    <nav class="links" aria-label="Sections">
+      <a href="#robot">Robot</a><a href="#mapping">Mapping</a><a href="#landmarks">Landmarks</a><a href="#navigation">Navigation</a><a href="#conversation">Conversation</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<main id="top">
+
+  <!--
+    ============================================================
+    HERO — interactive 3D robot stage
+    The <canvas> is drawn by the three.js script at the bottom.
+    The poster image shows until the 3D model is ready (or if
+    WebGL is unavailable). Part labels and the info card are
+    filled in by script.
+    ============================================================
+  -->
+  <section class="stage-sec" aria-label="Interactive 3D robot">
+    <div class="stage" id="stage">
+      <div class="stage-copy"><div class="wrap"><div class="inner">
+        <!-- <span class="eyebrow">UCSD Cognitive Robotics Lab · ROS 2 Jazzy</span> -->
+        <h1>A robot that gives the <em>building tour</em>.</h1>
+        <p class="lede">Tourguide is an autonomous guide for office and work locations such as the lobby of Franklin Antonio Hall and the museum at Qualcomm. A Reachy Mini head rides on a Husarion ROSbot base. It builds its own map, localizes against AprilTag landmarks and navigates between exhibits with Nav2.</p>
+      </div></div></div>
+      <div class="stage-view" id="stage-view">
+        <img class="stage-poster" src="/tourguide/media/robot-full.jpg" alt="The assembled Tourguide robot: a white Reachy Mini head on an aluminum tower above a four-wheeled ROSbot base">
+        <canvas id="robot3d" aria-label="3D model of the Tourguide robot. Drag to turn it."></canvas>
+        <div class="stage-labels" id="stage-labels"></div>
+        <div class="stage-bottom"><div class="wrap">
+          <div class="stage-card" id="stage-card" aria-live="polite"></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- Hero stats row (hidden for now)
+    <div class="wrap stage-stats">
+      <div class="stat-row">
+        <div class="stat"><b>3</b><span>mapping sessions merged</span></div>
+        <div class="stat"><b>5</b><span>AprilTag anchors in the map</span></div>
+        <div class="stat"><b>~21 m</b><span>span between farthest tags</span></div>
+        <div class="stat"><b>6/6</b><span>Nav2 servers configured</span></div>
+      </div>
+    </div>
+    -->
+  </section>
+
+  <!--
+    ============================================================
+    ROBOT — hardware anatomy
+    Hotspots (#annot) and the parts list (#parts) are generated
+    from the `parts` array in the first script.
+    ============================================================
+  -->
+  <section id="robot">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">The hardware</span><h2>Hardware: Two robots integrated into one.</h2></div>
+        <p class="lede">The base handles sensing and driving. The head handles talking to visitors. A custom aluminum mount joins them and puts the camera and lidar at useful heights. Tap a marker to see each part.</p>
+      </div>
+      <div class="anatomy">
+        <div class="annot" id="annot">
+          <img src="/tourguide/media/robot-full.jpg" alt="Front view of the robot with numbered markers on each component">
+        </div>
+        <div class="parts" id="parts"></div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    ============================================================
+    MAPPING — RTAB-Map session viewer + pose-graph explainer
+    Session tabs swap the map image via data-src / data-cap.
+    The pose graph SVG (#pg) is drawn by script.
+    ============================================================
+  -->
+  <section id="mapping">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Mapping</span><h2>Building the lab map, one session at a time.</h2></div>
+        <p class="lede">RTAB-Map fuses the OAK-D's RGB-D stream with wheel odometry and lidar into a 2D occupancy grid. It runs in multi-session mode, so each new drive extends the same map instead of starting over.</p>
+      </div>
+      <div class="maps">
+        <!-- Map viewer: session tabs, legend, image, caption -->
+        <div class="viewer">
+          <div class="viewer-bar">
+            <div class="tabs" role="tablist" aria-label="Mapping session">
+              <button role="tab" id="tab-s1" aria-selected="false" data-src="/tourguide/media/map-session-1.jpg" data-cap="Session 1. The first pass covers the central lab area. The long white rays are lidar returns through open doorways.">Session 1</button>
+              <button role="tab" id="tab-s2a" aria-selected="false" data-src="/tourguide/media/map-session-2a.jpg" data-cap="Session 2. A second drive adds the corridors to the north and south and fills gaps around the desks.">Session 2</button>
+              <button role="tab" id="tab-s2b" aria-selected="true" data-src="/tourguide/media/map-session-2b.jpg" data-cap="Session 2, after loop closure. Magenta marks obstacles seen by the camera; the map edges are now crisp and aligned.">Session 2 · closed</button>
+            </div>
+            <div class="legend"><span><i style="background:#fff"></i>free</span><span><i style="background:#111"></i>occupied</span><span><i style="background:#808080"></i>unknown</span><span><i style="background:#e01fd3"></i>camera obstacles</span></div>
+          </div>
+          <img id="map-img" src="/tourguide/media/map-session-2b.jpg" alt="RTAB-Map occupancy grid of the lab">
+          <p class="viewer-cap" id="map-cap">Session 2, after loop closure. Magenta marks obstacles seen by the camera; the map edges are now crisp and aligned.</p>
+        </div>
+
+        <!-- Pose graph card: animated loop closure + objective formula -->
+        <div class="graph-card">
+          <span class="eyebrow">How RTAB-Map fixes drift</span>
+          <h3>Poses are nodes. Measurements are edges.</h3>
+          <svg id="pg" viewBox="0 0 360 220" role="img" aria-label="Pose graph: odometry drift corrected by a loop closure"></svg>
+          <div style="display:flex; gap:8px; flex-wrap:wrap">
+            <button class="btn" id="pg-run">Close the loop</button>
+            <button class="btn ghost" id="pg-reset">Reset</button>
+          </div>
+          <p class="small">Wheel odometry drifts a little at every step. When the robot recognizes a place it has seen before, RTAB-Map adds a loop-closure edge and re-solves the whole graph, pulling every pose back into place.</p>
+          <div class="formula" aria-label="Pose graph objective">
+            min<sub>{<i>T<sub>i</sub></i>}</sub> <span class="big">Σ</span><sub>(<i>i,j</i>)∈ℰ</sub> ‖ <i>W<sub>ij</sub></i> log( <i>T̄<sub>ij</sub></i><sup>−1</sup> <i>T<sub>i</sub></i><sup>−1</sup> <i>T<sub>j</sub></i> )<sup>∨</sup> ‖<sup>2</sup>
+          </div>
+          <p class="small">The log map takes each SE(3) error into 𝔰𝔢(3), where it can be minimized with Levenberg–Marquardt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    ============================================================
+    LANDMARKS — AprilTag positions + YOLO semantic landmarks
+    The tag plot (#tagplot) and info panel (#tag-info) are built
+    from the `tags` array in the first script.
+    ============================================================
+  -->
+  <section id="landmarks">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Landmarks</span><h2>AprilTags pin the map to the real world.</h2></div>
+        <!-- <p class="lede">The lab has long stretches with few visual features. AprilTags give RTAB-Map absolute anchors there. These are the tag positions it estimated, in metres, in the <code>map</code> frame.</p> -->
+      </div>
+      <!-- Tag info card hidden for now; remove tagmap--plot-only and uncomment to restore -->
+      <div class="tagmap tagmap--plot-only">
+        <div class="plot"><svg id="tagplot" viewBox="0 0 1600 460" role="img" aria-label="Top-down plot of AprilTag positions in the map frame"></svg></div>
+        <!-- <div class="tag-info" id="tag-info" aria-live="polite"></div> -->
+      </div>
+
+      <!-- Semantic landmarks: YOLO detection, semantic bridge, covariance -->
+      <div class="sec-head sub-head">
+        <div><span class="eyebrow">Semantic landmarks</span><h3>YOLO adds objects to the map.</h3></div>
+        <p class="lede">AprilTags give fixed anchors. On top of those, the robot detects everyday objects like chairs with YOLO and stores them as landmarks in the same <code>map</code> frame. The map then records what things are, not only where the walls are.</p>
+      </div>
+      <div class="semantic">
+        <div class="step">
+          <!-- <span class="k">Next · on the camera</span> -->
+          <h3>YOLO runs on the OAK-D itself</h3>
+          <p>A spatial-detection pipeline on the camera's VPU finds an object, lines its box up with the stereo depth map and averages the depth into an X, Y, Z centroid. The CPU only receives the result.</p>
+        </div>
+        <div class="step">
+          <!-- <span class="k">Next · semantic bridge</span> -->
+          <h3>Same chair, or a new one?</h3>
+          <p>Detections are moved into the <code>map</code> frame with TF. If a new one lands within τ of a stored object, it reinforces that landmark. Otherwise it gets a fresh ID ≥ 1000, which prevents false loop closures between identical-looking objects.</p>
+        </div>
+        <div class="step">
+          <!-- <span class="k">Next · uncertainty</span> -->
+          <h3>Trust position, not orientation</h3>
+          <p>Bounding boxes give a decent position but no reliable heading, so each landmark carries this covariance:</p>
+          <div class="matrix" aria-label="Diagonal covariance matrix">
+            <span class="d">0.05</span><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span>
+            <span>0</span><span class="d">0.05</span><span>0</span><span>0</span><span>0</span><span>0</span>
+            <span>0</span><span>0</span><span class="d">0.05</span><span>0</span><span>0</span><span>0</span>
+            <span>0</span><span>0</span><span>0</span><span class="hi">9999</span><span>0</span><span>0</span>
+            <span>0</span><span>0</span><span>0</span><span>0</span><span class="hi">9999</span><span>0</span>
+            <span>0</span><span>0</span><span>0</span><span>0</span><span>0</span><span class="hi">9999</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    ============================================================
+    NAVIGATION — Nav2 stack: Sense → Localize → Plan → Act
+    Static content; nodes marked .hl are highlighted.
+    ============================================================
+  -->
+  <section id="navigation">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Navigation</span><h2>From sensor data to wheel commands.</h2></div>
+        <p class="lede">Once the map exists, RTAB-Map switches to localization mode and Nav2 takes over. A behavior tree decides what to do next, the planner finds a path across the global costmap, and the controller turns it into velocity commands.</p>
+      </div>
+      <div class="stack">
+        <div class="layer">
+          <div class="k"><span>Sense</span><span>01</span></div>
+          <div class="node"><b>RPLIDAR</b><code>/scan_filtered</code></div>
+          <div class="node"><b>OAK-D camera</b><code>/oak/rgb/image_raw</code><code>/oak/stereo/image_raw</code></div>
+          <div class="node"><b>Wheel odometry + IMU → EKF</b><code>/odometry/filtered</code></div>
+          <div class="node"><b>AprilTag detector</b><code>/detections</code></div>
+        </div>
+        <div class="layer">
+          <div class="k"><span>Localize</span><span>02</span></div>
+          <div class="node hl"><b>RTAB-Map, localization mode</b><code>/map</code></div>
+          <div class="node"><b>TF tree</b><code>map → odom → base_link</code></div>
+          <p class="small">Following REP 105: RTAB-Map publishes <code>map→odom</code>, the EKF publishes <code>odom→base_link</code>.</p>
+        </div>
+        <div class="layer">
+          <div class="k"><span>Plan</span><span>03</span></div>
+          <div class="node hl"><b>BT Navigator</b><code>NavigateToPose</code></div>
+          <div class="node"><b>Planner server</b><code>global costmap</code></div>
+          <div class="node"><b>Controller server</b><code>local costmap · 20 Hz</code></div>
+          <div class="node"><b>Behavior server</b><code>recoveries</code></div>
+        </div>
+        <div class="layer">
+          <div class="k"><span>Act</span><span>04</span></div>
+          <div class="node"><b>Collision monitor</b><code>safety stop</code></div>
+          <div class="node hl"><b>ROSbot base</b><code>/cmd_vel · TwistStamped</code></div>
+          <div class="node"><b>Tour script</b><code>tourguide_bringup</code></div>
+          <p class="flow-out">→ drives to the next exhibit</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    ============================================================
+    CONVERSATION — Gemini agent on the Reachy Mini head +
+    in-progress speech-synchronized movement
+    ============================================================
+  -->
+  <section id="conversation">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Conversation</span><h2>Gemini Powered Conversational Agent</h2></div>
+        <p class="lede">The Reachy Mini head runs a conversation agent powered by Gemini. Visitors can ask it questions at each stop and it answers out loud. Currently, we are working on matching its movements to what it is saying.</p>
+      </div>
+      <div class="semantic">
+        <div class="step">
+          <span class="pill done">Working</span>
+          <h3>Gemini conversation agent</h3>
+          <p>The head listens to visitors and replies with speech generated by a Gemini Live API powered agent, so the tour can go beyond a fixed script.</p>
+        </div>
+        <div class="step">
+          <span class="pill wip">In progress</span>
+          <h3>The LLM drives the head</h3>
+          <p>We are building on a fork of the Reachy Mini conversation app so the LLM can also send turning and small movement commands, such as a head turn, a nod, a tilt or an antenna wiggle. The physical motion commands are built and via through tool calling: the LLM picks a movement tool and its parameters that are run on the robot.</p>
+        </div>
+        <div class="step">
+          <span class="pill wip">In progress</span>
+          <h3>Speech and motion in sync</h3>
+          <p>The goal is to time those movements with the words, so the robot looks toward what it is describing and reacts with small, natural (and cute) gestures while it talks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===================== FOOTER: about, lab, team ===================== -->
+<footer>
+  <div class="wrap">
+    <div>
+      <h3>Tourguide</h3>
+      <p style="margin-top:8px">An autonomous tour-guide robot for the Qualcomm Museum, built at UC San Diego.</p>
+    </div>
+    <div>
+      <p class="eyebrow">Lab</p>
+      <ul><li>Cognitive Robotics Lab, UC San Diego</li><li>Advisor: Prof. Henrik I. Christensen</li></ul>
+    </div>
+    <div>
+      <p class="eyebrow">Team</p>
+      <ul><li>Charvi Shukla</li><li>Pragnya Korti, mount design</li></ul>
+    </div>
+  </div>
+</footer>
+
+<!--
+  ============================================================
+  SCRIPT 1 — page interactions
+  Anatomy hotspots, map tabs, pose-graph animation,
+  AprilTag plot.
+  ============================================================
+-->
+<script>
+(() => {
+  // ---------- design direction switcher ----------
+  const root = document.documentElement;
+  const dirs = ["gallery", "grid", "scan"];
+  function setDir(d) {
+    if (!dirs.includes(d)) d = "gallery";
+    root.setAttribute("data-direction", d);
+    document.querySelectorAll(".switch button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.dir === d)));
+    try { localStorage.setItem("tg-direction", d); } catch (e) {}
+    drawPoseGraph(currentT);
+  }
+  document.querySelectorAll(".switch button").forEach(b => b.addEventListener("click", () => setDir(b.dataset.dir)));
+
+  // ---------- anatomy ----------
+  const parts = [
+    { x: 47, y: 23, name: "Reachy Mini head", tag: "Pollen Robotics", text: "Expressive head with a camera, speaker, microphones and two antennas. It carries the conversation through Gemini Live and turns to face visitors." },
+    { x: 48, y: 42.5, name: "Reachy seat", tag: "custom mount · top plate", text: "A top plate designed to bolt the Reachy Mini's base onto the tower. The next version will be taller, closer to the proportions of the Reachy humanoid." },
+    { x: 57, y: 52, name: "Extrusion tower", tag: "aluminum 2020 profile", text: "Aluminum extrusions and round plates set the height of each sensor and leave room for wiring between the levels." },
+    { x: 50, y: 62, name: "RPLIDAR", tag: "/scan_filtered", text: "360° 2D laser scanner. It feeds RTAB-Map, the Nav2 costmaps and the collision monitor." },
+    { x: 49, y: 74, name: "OAK-D stereo camera", tag: "/oak/rgb · /oak/stereo", text: "RGB-D camera for visual mapping and AprilTag detection. Its onboard VPU will also run YOLO spatial detection." },
+    { x: 51.5, y: 83.7, name: "Battery pack", tag: "power for the head", text: "Powers the Reachy Mini. A holder for it and an extra Raspberry Pi is on the to-do list." },
+    { x: 69, y: 90.5, name: "Husarion ROSbot", tag: "ROS 2 Jazzy · /cmd_vel", text: "Four-wheel base with motor control, wheel encoders and IMU. It runs the ROS 2 stack: mapping, Nav2 and the tour script." }
+  ];
+  const annot = document.getElementById("annot"), list = document.getElementById("parts");
+  parts.forEach((p, i) => {
+    const h = document.createElement("button");
+    h.className = "hotspot"; h.id = "hs-" + i; h.style.left = p.x + "%"; h.style.top = p.y + "%";
+    h.textContent = i + 1; h.setAttribute("aria-label", p.name); h.setAttribute("aria-pressed", "false");
+    h.addEventListener("click", () => selectPart(i));
+    annot.appendChild(h);
+    const row = document.createElement("button");
+    row.className = "part"; row.id = "part-" + i; row.setAttribute("aria-pressed", "false");
+    row.innerHTML = `<span class="n">${i + 1}</span><span><h3>${p.name}</h3><span class="tag">${p.tag}</span><p class="detail">${p.text}</p></span>`;
+    row.addEventListener("click", () => selectPart(i));
+    list.appendChild(row);
+  });
+  function selectPart(i) {
+    document.querySelectorAll(".hotspot, .part").forEach(el => el.setAttribute("aria-pressed", "false"));
+    document.getElementById("hs-" + i).setAttribute("aria-pressed", "true");
+    document.getElementById("part-" + i).setAttribute("aria-pressed", "true");
+  }
+  selectPart(0);
+
+  // ---------- map session tabs ----------
+  const mapImg = document.getElementById("map-img"), mapCap = document.getElementById("map-cap");
+  document.querySelectorAll('[role="tab"]').forEach(t => t.addEventListener("click", () => {
+    document.querySelectorAll('[role="tab"]').forEach(x => x.setAttribute("aria-selected", "false"));
+    t.setAttribute("aria-selected", "true");
+    mapImg.src = t.dataset.src; mapCap.textContent = t.dataset.cap;
+  }));
+
+  // ---------- pose graph animation ----------
+  const svg = document.getElementById("pg");
+  const N = 12;
+  const truth = [], drift = [];
+  // true path: a loop around a rectangle
+  const pts = [[40,170],[100,170],[160,170],[220,170],[280,170],[320,140],[320,80],[270,50],[200,50],[130,50],[70,60],[45,110]];
+  pts.forEach(p => truth.push(p));
+  // drifted path: accumulate heading error around the first pose
+  let ang = 0;
+  truth.forEach((p, i) => {
+    if (i === 0) { drift.push(p.slice()); return; }
+    ang += 0.035;
+    const dx = p[0] - truth[i-1][0], dy = p[1] - truth[i-1][1];
+    const prev = drift[i-1];
+    drift.push([prev[0] + dx*Math.cos(ang) - dy*Math.sin(ang) + 1.5, prev[1] + dx*Math.sin(ang) + dy*Math.cos(ang) - 1.2]);
+  });
+  let currentT = 0, anim = null;
+  function css(v) { return getComputedStyle(root).getPropertyValue(v).trim(); }
+  function drawPoseGraph(t) {
+    const ink = css("--ink"), acc = css("--accent"), acc2 = css("--accent2"), muted = css("--muted"), line = css("--line");
+    const P = truth.map((p, i) => [drift[i][0] + (p[0]-drift[i][0])*t, drift[i][1] + (p[1]-drift[i][1])*t]);
+    let s = "";
+    // ghost of true path
+    s += `<polyline points="${truth.map(p=>p.join(",")).join(" ")} ${truth[0].join(",")}" fill="none" stroke="${line}" stroke-width="1.5" stroke-dasharray="3 4"/>`;
+    // odometry edges
+    for (let i = 1; i < N; i++) s += `<line x1="${P[i-1][0]}" y1="${P[i-1][1]}" x2="${P[i][0]}" y2="${P[i][1]}" stroke="${ink}" stroke-width="2"/>`;
+    // loop closure edge
+    const lc = t > 0 ? 1 : 0.35;
+    s += `<line x1="${P[N-1][0]}" y1="${P[N-1][1]}" x2="${P[0][0]}" y2="${P[0][1]}" stroke="${acc}" stroke-width="2.5" stroke-dasharray="6 4" opacity="${lc}"/>`;
+    // landmark constraint
+    s += `<rect x="168" y="100" width="16" height="16" fill="${acc2}" rx="2"/><text x="190" y="113" font-family="${css('--mono')}" font-size="10" fill="${muted}">tag</text>`;
+    [3, 9].forEach(i => s += `<line x1="${P[i][0]}" y1="${P[i][1]}" x2="176" y2="108" stroke="${acc2}" stroke-width="1" opacity=".7"/>`);
+    // poses
+    P.forEach((p, i) => {
+      s += `<circle cx="${p[0]}" cy="${p[1]}" r="${i===0||i===N-1?6:4.5}" fill="${i===0||i===N-1?acc:css('--surface')}" stroke="${ink}" stroke-width="1.6"/>`;
+    });
+    s += `<text x="${P[0][0]-6}" y="${P[0][1]+22}" font-family="${css('--mono')}" font-size="11" fill="${muted}">T₁</text>`;
+    s += `<text x="${P[N-1][0]-26}" y="${P[N-1][1]+4}" font-family="${css('--mono')}" font-size="11" fill="${muted}">T₁₂</text>`;
+    s += `<text x="350" y="212" text-anchor="end" font-family="${css('--mono')}" font-size="10" fill="${muted}">${t >= 1 ? "optimized" : t > 0 ? "solving…" : "odometry only"}</text>`;
+    svg.innerHTML = s;
+  }
+  function run(to) {
+    cancelAnimationFrame(anim);
+    const from = currentT, start = performance.now(), dur = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 1100;
+    const step = now => {
+      const k = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - k, 3);
+      currentT = from + (to - from) * e; drawPoseGraph(currentT);
+      if (k < 1) anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  }
+  document.getElementById("pg-run").addEventListener("click", () => run(1));
+  document.getElementById("pg-reset").addEventListener("click", () => run(0));
+
+  // ---------- AprilTag plot ----------
+  const tags = [
+    { id: 5, name: "Near the cameras", x: 4.1206, y: 1.2148, z: 0.1379, img: "/tourguide/media/rtab-tag5.jpg" },
+    { id: 4, name: "Near Julian's cubicle", x: -5.0885, y: 4.2549, z: 0.0177, img: "/tourguide/media/rtab-tag4.jpg" },
+    { id: 3, name: "Near the printer", x: -4.0644, y: -0.8474, z: 0.1405, img: "/tourguide/media/rtab-tag3.jpg" },
+    { id: 2, name: "Near the professor's office", x: -15.9850, y: 5.0869, z: 0.0275, img: null },
+    { id: 1, name: "On the table behind the Reachy", x: -1.5645, y: -3.7465, z: 0.1017, img: "/tourguide/media/rtab-tag1.jpg" }
+  ];
+  const plot = document.getElementById("tagplot");
+  const X0 = -18, X1 = 6, Y0 = -5, Y1 = 7, L = 56, R = 20, T = 20, B = 44, W = 1600, H = 460;
+  const sx = x => L + (x - X0) / (X1 - X0) * (W - L - R);
+  const sy = y => T + (Y1 - y) / (Y1 - Y0) * (H - T - B);
+  function drawPlot(sel) {
+    let s = "";
+    for (let x = -15; x <= 5; x += 5) {
+      s += `<line class="axis" x1="${sx(x)}" y1="${T}" x2="${sx(x)}" y2="${H-B}" stroke-width="${x===0?1.5:1}"/>`;
+      s += `<text class="tick" x="${sx(x)}" y="${H-B+20}" text-anchor="middle">${x} m</text>`;
+    }
+    for (let y = -5; y <= 5; y += 5) {
+      s += `<line class="axis" x1="${L}" y1="${sy(y)}" x2="${W-R}" y2="${sy(y)}" stroke-width="${y===0?1.5:1}"/>`;
+      s += `<text class="tick" x="${L-10}" y="${sy(y)+4}" text-anchor="end">${y}</text>`;
+    }
+    s += `<text class="tick" x="${W-R}" y="${H-6}" text-anchor="end">x (m), map frame</text>`;
+    // origin
+    const ox = sx(0), oy = sy(0);
+    s += `<line class="origin" x1="${ox}" y1="${oy}" x2="${ox+36}" y2="${oy}"/><line class="origin" x1="${ox}" y1="${oy}" x2="${ox}" y2="${oy-36}" style="stroke:var(--accent)"/>`;
+    s += `<circle cx="${ox}" cy="${oy}" r="4" style="fill:var(--ink)"/><text class="lbl" x="${ox+8}" y="${oy+18}">map origin</text>`;
+    tags.forEach(t => {
+      const cx = sx(t.x), cy = sy(t.y), on = t.id === sel;
+      const right = t.x < 2;
+      s += `<g class="tagbox${on?' on':''}" data-id="${t.id}" tabindex="0" role="button" aria-label="Tag ${t.id}, ${t.name}">
+        <rect class="t" x="${cx-13}" y="${cy-13}" width="26" height="26" rx="3"/>
+        <text class="id" x="${cx}" y="${cy+4.5}" text-anchor="middle">${t.id}</text>
+        <text class="lbl" x="${right ? cx+20 : cx-20}" y="${cy+4.5}" text-anchor="${right?'start':'end'}">${t.name}</text></g>`;
+    });
+    plot.innerHTML = s;
+    plot.querySelectorAll(".tagbox").forEach(g => {
+      g.addEventListener("click", () => selectTag(+g.dataset.id));
+      g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectTag(+g.dataset.id); } });
+    });
+  }
+  const info = document.getElementById("tag-info");
+  function selectTag(id) {
+    const t = tags.find(t => t.id === id);
+    drawPlot(id);
+    if (!info) return;
+    info.innerHTML = `
+      <span class="eyebrow">AprilTag ${t.id}</span>
+      <h3>${t.name}</h3>
+      <dl><dt>x</dt><dd>${t.x.toFixed(3)} m</dd><dt>y</dt><dd>${t.y.toFixed(3)} m</dd><dt>z</dt><dd>${t.z.toFixed(3)} m</dd><dt>from origin</dt><dd>${Math.hypot(t.x, t.y).toFixed(2)} m</dd></dl>
+      ${t.img ? `<img src="${t.img}" alt="RTAB-Map database viewer showing tag ${t.id} as a yellow landmark">` : `<p class="small">No viewer snapshot yet for this tag.</p>`}
+      <div class="tag-list">${tags.map(x => `<button data-id="${x.id}" aria-pressed="${x.id===id}">Tag ${x.id}</button>`).join("")}</div>`;
+    info.querySelectorAll(".tag-list button").forEach(b => b.addEventListener("click", () => selectTag(+b.dataset.id)));
+  }
+  selectTag(5);
+
+  // init direction last (needs pose graph defined)
+  let saved = null;
+  try { saved = localStorage.getItem("tg-direction"); } catch (e) {}
+  const hash = (location.hash || "").slice(1);
+  setDir("scan");
+})();
+</script>
+
+<!--
+  ============================================================
+  SCRIPT 2 — 3D robot stage (three.js r128)
+  Libraries first, then the scene: model, lidar scan,
+  part labels, orbit controls (drag to rotate; wheel scrolls the page).
+  ============================================================
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+<script>
+/* Interactive 3D stage.
+   The robot is a stand-in built from primitives, split into the same groups as the real hardware
+   (base, deck1, deck2, deck3, head). When the STL files arrive, call
+   tourguideLoadSTL(group, url, options) to drop a real part into its group. */
+(() => {
+  const view = document.getElementById("stage-view");
+  const canvas = document.getElementById("robot3d");
+  const labelsEl = document.getElementById("stage-labels");
+  const card = document.getElementById("stage-card");
+
+  const PARTS = [
+    { name: "Reachy Mini head", tag: "Pollen Robotics", group: "head", anchor: [0, 0.93, 0.065], text: "Expressive head with camera, speaker, microphones and two antennas. It holds the conversation with visitors." },
+    { name: "Reachy seat", tag: "custom mount · top plate", group: "deck3", anchor: [0.1, 0.61, 0.06], text: "Top plate designed to bolt the Reachy Mini to the tower. Version 2 will be taller." },
+    { name: "Extrusion tower", tag: "aluminum profile", group: "deck2", anchor: [0.07, 0.46, 0.045], text: "Aluminum extrusions and round plates set the height of each sensor and leave room for wiring." },
+    { name: "RPLIDAR", tag: "/scan_filtered", group: "deck2", anchor: [0, 0.425, 0.085], text: "360° laser scanner feeding RTAB-Map, the Nav2 costmaps and the collision monitor." },
+    { name: "OAK-D stereo camera", tag: "/oak/rgb · /oak/stereo", group: "deck1", anchor: [0.07, 0.19, 0.02], text: "RGB-D camera for visual mapping and AprilTag detection. Its VPU will also run YOLO." },
+    { name: "Battery pack", tag: "power for the head", group: "deck1", anchor: [0, 0.17, 0.165], text: "Powers the Reachy Mini. A proper holder is on the to-do list." },
+    { name: "Husarion ROSbot", tag: "ROS 2 Jazzy · /cmd_vel", group: "base", anchor: [0.175, 0.07, 0.14], text: "Four-wheel base with motors, encoders and IMU. Runs mapping, Nav2 and the tour script." }
+  ];
+  let sel = 0;
+  function showCard(i) {
+    const p = PARTS[i];
+    card.innerHTML = `<span class="num">Part ${i + 1} of ${PARTS.length}</span><h3>${p.name}</h3><span class="tag">${p.tag}</span><p>${p.text}</p>`;
+  }
+  showCard(0);
+
+  if (!window.THREE || !THREE.OrbitControls) { view.classList.add("no3d"); return; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
+  catch (e) { view.classList.add("no3d"); return; }
+
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 40);
+  const TARGET = new THREE.Vector3(0, 0.4, 0);
+  // starting camera: same viewing angle, pulled back so the whole robot fits with room around it.
+  // raise HOME_ZOOM to start further out, lower it to start closer.
+  const HOME_ZOOM = 1.35;
+  const HOME = new THREE.Vector3(1.2, 0.32, 1.5).multiplyScalar(HOME_ZOOM).add(TARGET);
+  camera.position.copy(HOME);
+
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.target.copy(TARGET);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+  controls.enablePan = false; controls.rotateSpeed = 0.7;
+  controls.enableZoom = false; // let the mouse wheel scroll the page instead of zooming
+  controls.minDistance = 0.8; controls.maxDistance = 3.4;
+  controls.minPolarAngle = 0.25; controls.maxPolarAngle = 1.6;
+  controls.autoRotate = !reduced; controls.autoRotateSpeed = 1.1;
+  let idleTimer, resetting = false;
+  controls.addEventListener("start", () => { controls.autoRotate = false; resetting = false; clearTimeout(idleTimer); });
+  controls.addEventListener("end", () => { clearTimeout(idleTimer); if (!reduced) idleTimer = setTimeout(() => { controls.autoRotate = true; }, 6000); });
+
+  // lights
+  scene.add(new THREE.HemisphereLight(0xf6e6c0, 0x22102c, 0.6));
+  const key = new THREE.DirectionalLight(0xffffff, 1.5);
+  key.position.set(1.4, 2.6, 1.3); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -0.0005;
+  Object.assign(key.shadow.camera, { left: -0.8, right: 0.8, top: 1.4, bottom: -0.4, near: 0.5, far: 6 });
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0x6f8fc0, 1.2); rim.position.set(-1.6, 1.3, -1.4); scene.add(rim);
+  const rim2 = new THREE.DirectionalLight(0xf2d98d, 0.55); rim2.position.set(1.6, 0.5, -1.3); scene.add(rim2);
+
+  // floor: a fading 5 cm occupancy grid
+  function floorTexture() {
+    const c = document.createElement("canvas"); c.width = c.height = 1024;
+    const g = c.getContext("2d");
+    const cells = 80, step = 1024 / cells;
+    for (let i = 0; i <= cells; i++) {
+      g.strokeStyle = i % 10 === 0 ? "rgba(181,186,138,0.55)" : "rgba(181,186,138,0.22)";
+      g.lineWidth = i % 10 === 0 ? 1.6 : 1;
+      g.beginPath(); g.moveTo(i * step, 0); g.lineTo(i * step, 1024); g.stroke();
+      g.beginPath(); g.moveTo(0, i * step); g.lineTo(1024, i * step); g.stroke();
+    }
+    g.globalCompositeOperation = "destination-in";
+    const r = g.createRadialGradient(512, 512, 0, 512, 512, 512);
+    r.addColorStop(0, "rgba(0,0,0,1)"); r.addColorStop(0.5, "rgba(0,0,0,.55)"); r.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = r; g.fillRect(0, 0, 1024, 1024);
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 4; return t;
+  }
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), new THREE.MeshBasicMaterial({ map: floorTexture(), transparent: true, depthWrite: false }));
+  floor.rotation.x = -Math.PI / 2; scene.add(floor);
+  const shadowCatcher = new THREE.Mesh(new THREE.CircleGeometry(1.2, 64), new THREE.ShadowMaterial({ opacity: 0.55 }));
+  shadowCatcher.rotation.x = -Math.PI / 2; shadowCatcher.position.y = 0.001; shadowCatcher.receiveShadow = true; scene.add(shadowCatcher);
+
+  // materials
+  const M = {
+    shell: new THREE.MeshStandardMaterial({ color: 0xf1f1ec, roughness: 0.38 }),
+    alu: new THREE.MeshStandardMaterial({ color: 0xc4c9ce, roughness: 0.38, metalness: 0.45 }),
+    plateW: new THREE.MeshStandardMaterial({ color: 0xe4e6e8, roughness: 0.5, metalness: 0.15 }),
+    black: new THREE.MeshStandardMaterial({ color: 0x17191c, roughness: 0.55 }),
+    gloss: new THREE.MeshStandardMaterial({ color: 0x0c0d0f, roughness: 0.18, metalness: 0.2 }),
+    tire: new THREE.MeshStandardMaterial({ color: 0x0f1012, roughness: 0.92 }),
+    rim: new THREE.MeshStandardMaterial({ color: 0x2c3036, roughness: 0.4, metalness: 0.5 }),
+    lens: new THREE.MeshStandardMaterial({ color: 0x1b2a4a, roughness: 0.1, metalness: 0.5 }),
+    label: new THREE.MeshStandardMaterial({ color: 0x8d949b, roughness: 0.7 }),
+    wire: new THREE.MeshStandardMaterial({ color: 0x2b2b2b, roughness: 0.6 }),
+    glow: new THREE.MeshStandardMaterial({ color: 0x2a0806, emissive: 0xff3b30, emissiveIntensity: 0.7 }),
+    body: new THREE.MeshStandardMaterial({ color: 0x2b2f35, roughness: 0.55, metalness: 0.35 }),
+    lensDark: new THREE.MeshStandardMaterial({ color: 0x050608, roughness: 0.05, metalness: 0.6 }),
+    glint: new THREE.MeshBasicMaterial({ color: 0xffffff }),
+    ledG: new THREE.MeshStandardMaterial({ color: 0x0a2a12, emissive: 0x2ee66b, emissiveIntensity: 1 }),
+    ledB: new THREE.MeshStandardMaterial({ color: 0x08142a, emissive: 0x3b8bff, emissiveIntensity: 0.8 })
+  };
+
+  const robot = new THREE.Group(); scene.add(robot);
+  const G = {};
+  ["base", "deck1", "deck2", "deck3", "head"].forEach(k => { G[k] = new THREE.Group(); robot.add(G[k]); });
+  const partMeshes = PARTS.map(() => []);
+  const pickables = [];
+  function add(geom, mat, group, part, x = 0, y = 0, z = 0) {
+    const m = new THREE.Mesh(geom, mat.clone());
+    m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true;
+    m.userData.part = part;
+    G[group].add(m); pickables.push(m);
+    if (part != null) partMeshes[part].push(m);
+    return m;
+  }
+  const Box = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+  const Cyl = (rt, rb, h, s = 48) => new THREE.CylinderGeometry(rt, rb, h, s);
+
+  // shared shape helper
+  function roundedRect(w, h, r) {
+    const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+    s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+    s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+    s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+    return s;
+  }
+  // orient a thin cylinder between two points
+  function rod(a, b, r, mat, group, part) {
+    const d = new THREE.Vector3().subVectors(b, a), len = d.length();
+    const m = add(Cyl(r, r, len, 8), mat, group, part, (a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize());
+    return m;
+  }
+
+  // base: ROSbot 3 PRO proportions, 200 x 233 mm footprint, 84 mm wheels, 106 mm wheelbase (part 6)
+  const chassisGeo = new THREE.ExtrudeGeometry(roundedRect(0.168, 0.2, 0.022), { depth: 0.066, bevelEnabled: true, bevelThickness: 0.006, bevelSize: 0.006, bevelSegments: 3, curveSegments: 10 });
+  chassisGeo.rotateX(-Math.PI / 2); chassisGeo.center();
+  add(chassisGeo, M.body, "base", 6, 0, 0.062, 0);
+  add(Box(0.16, 0.003, 0.19), M.black, "base", 6, 0, 0.1035, 0);           // top plate
+  add(Box(0.12, 0.03, 0.004), M.gloss, "base", 6, 0, 0.062, 0.1045);       // front panel
+  add(Box(0.13, 0.034, 0.004), M.black, "base", 6, 0, 0.062, -0.1045);     // rear panel
+  for (let i = 0; i < 6; i++) add(new THREE.SphereGeometry(0.0022, 8, 6), i < 2 ? M.ledG : M.ledB, "base", 6, -0.045 + i * 0.011, 0.07, -0.107);
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+    const x = sx * 0.1015, z = sz * 0.053;
+    add(Cyl(0.042, 0.042, 0.03, 40), M.tire, "base", 6, x, 0.042, z).rotation.z = Math.PI / 2;
+    add(new THREE.TorusGeometry(0.036, 0.004, 8, 40), M.tire, "base", 6, x + sx * 0.0155, 0.042, z).rotation.y = Math.PI / 2;
+    add(Cyl(0.027, 0.027, 0.032, 24), M.rim, "base", 6, x, 0.042, z).rotation.z = Math.PI / 2;
+    for (let k = 0; k < 5; k++) {
+      const s = add(Box(0.003, 0.044, 0.008), M.rim, "base", 6, x + sx * 0.017, 0.042, z);
+      s.rotation.x = k * Math.PI * 2 / 5;
+    }
+  }
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(Cyl(0.006, 0.006, 0.006, 12), M.black, "base", 6, sx * 0.06, 0.108, sz * 0.07);
+  // deck 1: bottom plate, battery, camera, lower posts
+  add(Cyl(0.205, 0.205, 0.006, 72), M.alu, "deck1", 2, 0, 0.128, 0);
+  add(Box(0.085, 0.034, 0.15), M.black, "deck1", 5, 0, 0.148, 0.085);
+  add(Box(0.06, 0.002, 0.05), M.label, "deck1", 5, 0, 0.1655, 0.07);
+  add(Box(0.02, 0.04, 0.02), M.alu, "deck1", 4, 0, 0.151, 0.0);
+  add(Box(0.11, 0.028, 0.032), M.black, "deck1", 4, 0, 0.185, 0.0);
+  for (const lx of [-0.035, 0, 0.035]) add(Cyl(0.007, 0.007, 0.004, 20), M.lens, "deck1", 4, lx, 0.185, 0.017).rotation.x = Math.PI / 2;
+  // lower posts: 174 mm (25% shorter than the first build)
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(Box(0.02, 0.174, 0.02), M.alu, "deck1", 2, sx * 0.085, 0.218, sz * 0.04);
+  // deck 2: mid plate, lidar, upper posts
+  add(Cyl(0.168, 0.168, 0.006, 72), M.plateW, "deck2", 2, 0, 0.366, 0);
+  add(Cyl(0.05, 0.054, 0.03, 48), M.black, "deck2", 3, 0, 0.384, 0.03);
+  add(Cyl(0.0465, 0.0465, 0.008, 48), M.glow, "deck2", null, 0, 0.403, 0.03);
+  add(Cyl(0.042, 0.046, 0.02, 48), M.gloss, "deck2", 3, 0, 0.415, 0.03);
+  // upper posts: 176 mm (25% shorter); deck2 itself sits 58 mm lower, see BASE_Y
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(Box(0.02, 0.1755, 0.02), M.alu, "deck2", 2, sx * 0.06, 0.457, sz * 0.035);
+  // deck 3: Reachy seat
+  add(Cyl(0.125, 0.125, 0.006, 64), M.alu, "deck3", 1, 0, 0.606, 0);
+  add(Cyl(0.072, 0.078, 0.018, 48), M.black, "deck3", 1, 0, 0.618, 0);
+  // head group: Reachy Mini at its published size, about 28 cm tall and 16 cm wide (part 0)
+  // body shell, open at the top like the real one
+  const prof = [[0.058, 0], [0.068, 0.012], [0.074, 0.05], [0.075, 0.1], [0.071, 0.14], [0.064, 0.165]].map(([r, y]) => new THREE.Vector2(r, y));
+  const shellMat = M.shell.clone(); shellMat.side = THREE.DoubleSide;
+  add(new THREE.LatheGeometry(prof, 64), shellMat, "head", 0, 0, 0.627, 0).scale.set(1, 1, 0.92);
+  add(Cyl(0.058, 0.058, 0.004, 48), M.shell, "head", 0, 0, 0.629, 0);      // bottom
+  add(Cyl(0.056, 0.056, 0.003, 48), M.black, "head", 0, 0, 0.77, 0);       // dark cavity
+  // neck: six-rod parallel platform that moves the head
+  add(Cyl(0.03, 0.03, 0.006, 32), M.rim, "head", 0, 0, 0.775, 0);
+  add(Cyl(0.026, 0.026, 0.006, 32), M.rim, "head", 0, 0, 0.822, 0);
+  for (let i = 0; i < 6; i++) {
+    const a0 = i * Math.PI / 3 + (i % 2 ? 0.25 : -0.25), a1 = a0 + (i % 2 ? 0.7 : -0.7);
+    rod(new THREE.Vector3(Math.cos(a0) * 0.027, 0.778, Math.sin(a0) * 0.027), new THREE.Vector3(Math.cos(a1) * 0.022, 0.82, Math.sin(a1) * 0.022), 0.0016, M.wire, "head", 0);
+  }
+  // head shell
+  const headGeo = new THREE.ExtrudeGeometry(roundedRect(0.124, 0.06, 0.026), { depth: 0.054, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.018, bevelSegments: 8, curveSegments: 16 });
+  headGeo.center();
+  const HEAD_Y = 0.873;
+  add(headGeo, M.shell, "head", 0, 0, HEAD_Y, 0);
+  // face: two round eye lenses joined by a thin bridge
+  for (const s of [-1, 1]) {
+    add(Cyl(0.0175, 0.0175, 0.004, 40), M.gloss, "head", 0, s * 0.031, HEAD_Y + 0.004, 0.0455).rotation.x = Math.PI / 2;
+    add(Cyl(0.009, 0.009, 0.002, 32), M.lensDark, "head", 0, s * 0.031, HEAD_Y + 0.004, 0.0478).rotation.x = Math.PI / 2;
+    add(new THREE.SphereGeometry(0.0022, 10, 8), M.glint, "head", null, s * 0.031 + 0.005, HEAD_Y + 0.010, 0.0482);
+  }
+  add(Box(0.03, 0.0035, 0.002), M.gloss, "head", 0, 0, HEAD_Y + 0.004, 0.0465);
+  // antennas with their springs
+  for (const s of [-1, 1]) {
+    const a = 0.55, dx = s * Math.sin(a), dy = Math.cos(a), bx = s * 0.055, by = HEAD_Y + 0.047;
+    add(Cyl(0.0016, 0.0016, 0.15, 8), M.wire, "head", 0, bx + dx * 0.075, by + dy * 0.075, -0.008).rotation.z = -s * a;
+    add(Cyl(0.005, 0.005, 0.02, 12), M.wire, "head", 0, bx + dx * 0.045, by + dy * 0.045, -0.008).rotation.z = -s * a;
+    add(new THREE.SphereGeometry(0.0035, 12, 8), M.wire, "head", 0, bx + dx * 0.15, by + dy * 0.15, -0.008);
+  }
+
+  // lidar sweep: simulated returns from a small room with a few chairs
+  const NPTS = 540;
+  const lidarGeo = new THREE.BufferGeometry();
+  const lpos = new Float32Array(NPTS * 3), lcol = new Float32Array(NPTS * 3), angles = new Float32Array(NPTS);
+  const obstacles = [[0.85, 0.55, 0.16], [-0.95, -0.45, 0.2], [-0.35, 0.9, 0.13], [0.6, -0.8, 0.18]];
+  for (let i = 0; i < NPTS; i++) {
+    const th = i / NPTS * Math.PI * 2, dx = Math.cos(th), dz = Math.sin(th);
+    let d = Math.min(Math.abs(dx) > 1e-6 ? 1.55 / Math.abs(dx) : 1e9, Math.abs(dz) > 1e-6 ? 1.15 / Math.abs(dz) : 1e9);
+    for (const [cx, cz, r] of obstacles) {
+      const b = dx * cx + dz * cz, c = cx * cx + cz * cz - r * r, disc = b * b - c;
+      if (disc > 0) { const t = b - Math.sqrt(disc); if (t > 0 && t < d) d = t; }
+    }
+    d += (Math.random() - 0.5) * 0.015;
+    lpos[i * 3] = dx * d; lpos[i * 3 + 1] = 0; lpos[i * 3 + 2] = dz * d; angles[i] = th;
+  }
+  lidarGeo.setAttribute("position", new THREE.BufferAttribute(lpos, 3));
+  lidarGeo.setAttribute("color", new THREE.BufferAttribute(lcol, 3));
+  const lidar = new THREE.Points(lidarGeo, new THREE.PointsMaterial({ size: 0.02, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+  lidar.position.z = 0.03; scene.add(lidar);
+  const beamGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3(1, 0, 0)]);
+  const beam = new THREE.Line(beamGeo, new THREE.LineBasicMaterial({ color: 0xf2d98d, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending }));
+  beam.position.z = 0.03; scene.add(beam);
+
+  // labels
+  PARTS.forEach((p, i) => {
+    const b = document.createElement("button");
+    b.className = "slabel"; b.id = "slabel-" + i;
+    b.innerHTML = `<span class="dot">${i + 1}</span><span class="nm">${p.name}</span>`;
+    b.setAttribute("aria-label", p.name);
+    b.addEventListener("click", () => select(i));
+    labelsEl.appendChild(b); p.el = b; p.v = new THREE.Vector3(...p.anchor);
+  });
+  function select(i) {
+    sel = i; showCard(i);
+    PARTS.forEach((p, j) => p.el.setAttribute("aria-pressed", String(j === i)));
+    partMeshes.forEach((arr, j) => arr.forEach(m => { m.material.emissive.setHex(j === i ? 0xf2d98d : 0x000000); m.material.emissiveIntensity = j === i ? 0.18 : 0; }));
+  }
+  select(0);
+
+  // click a mesh to select its part (ignore drags)
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  let downAt = null;
+  canvas.addEventListener("pointerdown", e => { downAt = [e.clientX, e.clientY]; });
+  canvas.addEventListener("pointerup", e => {
+    if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
+    const r = canvas.getBoundingClientRect();
+    ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(pickables, false).find(h => h.object.userData.part != null);
+    if (hit) select(hit.object.userData.part);
+  });
+
+  // controls
+  // resting heights after the 25% shorter tower, plus exploded-view lift per level
+  const BASE_Y = { base: 0, deck1: -0.014, deck2: -0.072, deck3: -0.13, head: -0.13 };
+  const EXP = { base: 0, deck1: 0.05, deck2: 0.12, deck3: 0.2, head: 0.3 };
+  let exp = 0, expTarget = 0;
+
+  // sizing: on wide screens the view itself sits right of the headline (see .stage-view in styles.css)
+  function resize() {
+    const w = view.clientWidth, h = view.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.fov = w < 560 ? 38 : 32;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(view); resize();
+
+  // loop, paused when off screen
+  const clock = new THREE.Clock();
+  const tmp = new THREE.Vector3(), radial = new THREE.Vector3(), camFlat = new THREE.Vector3();
+  let visible = true, running = false, first = true;
+  function updateLabels() {
+    const w = view.clientWidth, h = view.clientHeight;
+    camFlat.set(camera.position.x, 0, camera.position.z).normalize();
+    PARTS.forEach(p => {
+      tmp.copy(p.v); G[p.group].localToWorld(tmp);
+      radial.set(tmp.x, 0, tmp.z);
+      const back = radial.length() > 0.01 && radial.normalize().dot(camFlat) < -0.15;
+      tmp.project(camera);
+      const x = (tmp.x * 0.5 + 0.5) * w, y = (-tmp.y * 0.5 + 0.5) * h;
+      p.el.style.transform = `translate(${(x - 12).toFixed(1)}px, ${(y - 12).toFixed(1)}px)`;
+      p.el.classList.toggle("back", back);
+    });
+  }
+  function tick() {
+    if (!visible) { running = false; return; }
+    const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+    exp += reduced ? (expTarget - exp) : (expTarget - exp) * Math.min(1, dt * 7);
+    for (const k in G) G[k].position.y = BASE_Y[k] + EXP[k] * exp;
+    controls.target.y = TARGET.y + 0.13 * exp;
+    if (resetting) {
+      camera.position.lerp(HOME.clone().setY(HOME.y + 0.13 * exp), 0.08);
+      if (camera.position.distanceTo(HOME) < 0.15) resetting = false;
+    }
+    if (lidar.visible) {
+      const ly = 0.403 + BASE_Y.deck2 + EXP.deck2 * exp;
+      lidar.position.y = beam.position.y = ly;
+      const sweep = reduced ? 0 : (t * Math.PI * 2 * 0.6) % (Math.PI * 2);
+      let bi = 0;
+      for (let i = 0; i < NPTS; i++) {
+        let age = sweep - angles[i]; if (age < 0) age += Math.PI * 2;
+        const k = reduced ? 0.55 : Math.max(0, 1 - age / (Math.PI * 2 * 0.9));
+        lcol[i * 3] = 0.95 * k; lcol[i * 3 + 1] = 0.85 * k; lcol[i * 3 + 2] = 0.55 * k;
+        if (age < 0.02) bi = i;
+      }
+      lidarGeo.attributes.color.needsUpdate = true;
+      const bp = beamGeo.attributes.position;
+      bp.setXYZ(1, lpos[bi * 3], 0, lpos[bi * 3 + 2]); bp.needsUpdate = true;
+      beam.visible = !reduced;
+    }
+    controls.update();
+    renderer.render(scene, camera);
+    updateLabels();
+    if (first) { first = false; view.classList.add("ready"); }
+    requestAnimationFrame(tick);
+  }
+  function start() { if (!running) { running = true; clock.getDelta(); requestAnimationFrame(tick); } }
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) start(); }).observe(view);
+  start();
+
+  // hook for the real CAD: tourguideLoadSTL("deck3", "/tourguide/media/stl/reachy_seat.stl", { scale: 0.001, y: 0.603, replace: true })
+  window.tourguideLoadSTL = function (group, url, opts = {}) {
+    if (!THREE.STLLoader || !G[group]) return;
+    new THREE.STLLoader().load(url, geo => {
+      geo.computeVertexNormals();
+      const m = new THREE.Mesh(geo, (opts.material || M.alu).clone());
+      m.scale.setScalar(opts.scale ?? 0.001);
+      m.rotation.x = opts.rotX ?? -Math.PI / 2;
+      m.position.set(opts.x || 0, opts.y || 0, opts.z || 0);
+      m.castShadow = m.receiveShadow = true;
+      if (opts.replace) G[group].children.slice().forEach(c => G[group].remove(c));
+      m.userData.part = opts.part ?? null; G[group].add(m); pickables.push(m);
+      if (opts.part != null) partMeshes[opts.part].push(m);
+    });
+  };
+})();
+</script>

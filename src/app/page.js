@@ -43,8 +43,35 @@ export default function HomePage() {
         </div>
       </header>
 
+
       <section className={styles.experience}>
         <h2 className={styles.sectionTitle}>Experience</h2>
+
+      
+        <div className={styles.experienceItem}>
+          <Image
+            src={brain}
+            alt="Brain Corp Logo"
+            className={styles.experienceLogoBrain}
+          />
+          <div className={styles.experienceDetails}>
+            <div className={styles.experienceTitle}>
+              Software Engineering Intern
+            </div>
+            <div className={styles.experienceCompany}>
+              Brain Corporation, Applied Machine Learning Team
+            </div>
+            <div className={styles.experienceDuration}>
+              {" "}
+              June 2026 - September 2026
+            </div>
+            <p className={styles.experienceDescription}>
+              Built an agentic monitor debug agent for the Sense Robot's computer vision and insights pipeline. 
+            </p>
+          </div>
+        </div>
+
+
         <div className={styles.experienceItem}>
           <Image
             src={apple}
@@ -55,12 +82,12 @@ export default function HomePage() {
             <div className={styles.experienceTitle}>
               Tools and Automation Intern
             </div>
-            <div className={styles.experienceCompany}>Apple - Core OS Team</div>
+            <div className={styles.experienceCompany}>Apple, Core OS Team</div>
             <div className={styles.experienceDuration}>
               February 2025 - June 2025
             </div>
             <p className={styles.experienceDescription}>
-              Incoming full-time intern for Winter and Spring quarters in 2025.
+              Built a performance metric tracking dashboard. 
             </p>
           </div>
         </div>
@@ -76,14 +103,14 @@ export default function HomePage() {
               Software Engineering Intern
             </div>
             <div className={styles.experienceCompany}>
-              Brain Corporation - Sense Tools Team
+              Brain Corporation, Sense Tools and Applied Machine Learning Teams
             </div>
             <div className={styles.experienceDuration}>
               {" "}
               June 2025 - September 2025
             </div>
             <p className={styles.experienceDescription}>
-              Incoming full-time intern for Summer 2025.
+              Worked on improving product recognition. 
             </p>
           </div>
         </div>
@@ -99,7 +126,7 @@ export default function HomePage() {
               Software Engineering Intern
             </div>
             <div className={styles.experienceCompany}>
-              Wise Counsel AI - Core Negotiation Engine
+              Wise Counsel AI, Core Negotiation Engine
             </div>
             <div className={styles.experienceDuration}>
               {" "}
@@ -122,6 +149,21 @@ export default function HomePage() {
         </p>
 
         <div className={styles.projects}>
+          <div className={styles.projectItem}>
+            <h3 className={styles.projectTitle}>
+              <b> Tourguide Robot </b>
+            </h3>
+            <a href="/tourguide/index.html" className={styles.projectLink}>
+              Project Site
+            </a>{" "}
+            <p className={styles.projectAuthors}>
+              {" "}
+              A tour guide robot built from a Reachy Mini head on a ROSbot base,
+              with RTAB-Map mapping, AprilTag landmarks, autonomous navigation,
+              and conversation.
+            </p>
+          </div>
+
           <div className={styles.projectItem}>
             <h3 className={styles.projectTitle}>
               <b> Advanced Robotics and Controls Lab @ UCSD </b>
