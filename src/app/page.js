@@ -11,6 +11,20 @@ import ucsd from "./ucsd.png";
 export default function HomePage() {
   return (
     <div className={styles.container}>
+      <nav className={styles.sectionNav} aria-label="Page sections">
+        <a href="#experience" className={styles.sectionNavLink}>
+          Industry Experience
+        </a>
+        <a href="#research" className={styles.sectionNavLink}>
+          Research
+        </a>
+        <a href="#projects" className={styles.sectionNavLink}>
+          Projects
+        </a>
+        <a href="#teaching" className={styles.sectionNavLink}>
+          Teaching
+        </a>
+      </nav>
       <header className={styles.header}>
         <h1 className={styles.name}>Charvi Shukla</h1>
         <p className={styles.description}>
@@ -57,8 +71,8 @@ export default function HomePage() {
       </header>
 
 
-      <section className={styles.experience}>
-        <h2 className={styles.sectionTitle}>Experience</h2>
+      <section id="experience" className={styles.experience}>
+        <h2 className={styles.sectionTitle}>Industry Experience</h2>
 
       
         <div className={styles.experienceItem}>
@@ -186,11 +200,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className={styles.research}>
+      <section id="research" className={styles.research}>
         <h2 className={styles.sectionTitle}>Research</h2>
         <p className={styles.sectionDescription}>
-          My research interests lie in medical and autonomous driving
-          applications of Computer Vision.
         </p>
 
         <div className={styles.projects}>
@@ -251,7 +263,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className={styles.projectsSection}>
+      <section id="projects" className={styles.projectsSection}>
         <h2 className={styles.sectionTitle}>Projects</h2>
 
         <div className={styles.projectCard}>
@@ -266,10 +278,6 @@ export default function HomePage() {
             <h3 className={styles.projectTitle}>
               <b>Autonomous Navigation on a Wave Rover</b>
             </h3>
-            <div className={styles.projectMeta}>
-              CSE 276A (Intro to Robotics), UC San Diego, Fall 2025 · with
-              Mohak Vaswani
-            </div>
             <div className={styles.projectLinks}>
               <a
                 href="https://www.youtube.com/playlist?list=PLW1JCQ-gux1SQ1xb1dhEoMmFhvGJXRUco"
@@ -357,9 +365,6 @@ export default function HomePage() {
             <h3 className={styles.projectTitle}>
               <b>Visual-Inertial SLAM</b>
             </h3>
-            <div className={styles.projectMeta}>
-              ECE 276A (Sensing &amp; Estimation in Robotics), UC San Diego
-            </div>
             <div className={styles.projectLinks}>
               <a
                 href="/projects/visual-inertial-slam.pdf"
@@ -405,9 +410,6 @@ export default function HomePage() {
             <h3 className={styles.projectTitle}>
               <b>LiDAR-Based SLAM</b>
             </h3>
-            <div className={styles.projectMeta}>
-              ECE 276A (Sensing &amp; Estimation in Robotics), UC San Diego
-            </div>
             <div className={styles.projectLinks}>
               <a
                 href="/projects/lidar-slam.pdf"
@@ -453,9 +455,6 @@ export default function HomePage() {
             <h3 className={styles.projectTitle}>
               <b>IMU Orientation Estimation &amp; Panorama Stitching</b>
             </h3>
-            <div className={styles.projectMeta}>
-              ECE 276A (Sensing &amp; Estimation in Robotics), UC San Diego
-            </div>
             <div className={styles.projectLinks}>
               <a
                 href="/projects/imu-orientation-panorama.pdf"
@@ -487,10 +486,6 @@ export default function HomePage() {
             <h3 className={styles.projectTitle}>
               <b>Pupperdoro: An Embodied Study Companion Robot</b>
             </h3>
-            <div className={styles.projectMeta}>
-              CSE 276B (Human-Robot Interaction), UC San Diego, Spring 2026 ·
-              with Kate Romero and Faith Rivera
-            </div>
             <div className={styles.projectLinks}>
               <a
                 href="https://youtu.be/ek_93tSEXY8"
@@ -520,8 +515,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className={styles.teaching}>
-        <h2 className={styles.sectionTitle}>Teaching Experience</h2>
+      <section id="teaching" className={styles.teaching}>
+        <h2 className={styles.sectionTitle}>Teaching</h2>
 
         <div className={styles.teachingRole}>
           <Image
@@ -617,6 +612,16 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <footer className={styles.footer}>
+        Last updated:{" "}
+        {new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          timeZone: "America/Los_Angeles",
+        })}
+      </footer>
     </div>
   );
 }

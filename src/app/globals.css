@@ -4,3 +4,7 @@ body {
   font-weight: 400;
   /* background-color: #f7f3f3 */
 }
+
+html {
+  scroll-behavior: smooth;
+}
