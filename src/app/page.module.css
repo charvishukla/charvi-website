@@ -85,6 +85,64 @@
   margin-top: 40px;
 }
 
+.projectsSection {
+  margin-top: 40px;
+}
+
+.projectCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.projectImage {
+  width: 200px;
+  height: 140px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 5px;
+  border: 1px solid #e5e5e5;
+}
+
+.projectDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.projectMeta {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 2px;
+}
+
+.projectLinks {
+  margin-bottom: 4px;
+}
+
+.projectList {
+  margin-left: 20px;
+  list-style-type: disc;
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.projectList li {
+  margin-bottom: 4px;
+}
+
+@media (max-width: 600px) {
+  .projectCard {
+    flex-direction: column;
+  }
+
+  .projectImage {
+    width: 100%;
+    height: auto;
+  }
+}
+
 .experienceItem {
   display: flex;
   align-items: center;
@@ -210,3 +268,12 @@
   line-height: 1.5;
 }
 
+
+.inlineLink {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.inlineLink:hover {
+  text-decoration: underline;
+}

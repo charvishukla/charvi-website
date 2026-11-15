@@ -14,10 +14,23 @@ export default function HomePage() {
       <header className={styles.header}>
         <h1 className={styles.name}>Charvi Shukla</h1>
         <p className={styles.description}>
-          👋🏽 Hi! I am a fourth year undergraduate student at UC San Diego,
-          pursuing a dual degree in Mathematics-Computer Science and Cognitive
-          Science with a specialization in Machine Learning and Neural
-          Computation.
+          👋🏽 Hi! I&apos;m an M.S. student in Computer Science at UC San Diego,
+          specializing in Robotics. I work in the{" "}
+          <a href="https://www.cogrob.org" target="_blank" className={styles.inlineLink}>
+            Cognitive Robotics Lab
+          </a>
+          , where my thesis is advised by{" "}
+          <a href="https://hichristensen.com" target="_blank" className={styles.inlineLink}>
+            Professor Henrik I. Christensen
+          </a>
+          . I am interested in studying the intersection of machine learning and robotics, focusing on how
+          large language models can make human-robot interaction more natural
+          and useful.
+        </p>
+        <p className={styles.description}>
+          Before that, I earned B.S. degrees in Mathematics-Computer Science and
+          in Cognitive Science (specialization in Machine Learning and Neural
+          Computation) at UC San Diego.
         </p>
         <p className={styles.description}>Email: cshukla [at] ucsd [dot] edu</p>
         <div className={styles.links}>
@@ -65,8 +78,19 @@ export default function HomePage() {
               {" "}
               June 2026 - September 2026
             </div>
+            <a
+              href="/posters/brain-corp-2026-poster.pdf"
+              target="_blank"
+              className={styles.projectLink}
+            >
+              Poster
+            </a>
             <p className={styles.experienceDescription}>
-              Built an agentic monitor debug agent for the Sense Robot's computer vision and insights pipeline. 
+              Built Otto, an agentic AI system that monitors the robots&apos;
+              computer vision and insights pipeline for anomalies across 10+
+              BigQuery tables and debugs them with tool-calling sub-agents that
+              query SQL, inspect code, and run shell commands. Deployed on GCP
+              Cloud Run with Pulumi infrastructure-as-code.
             </p>
           </div>
         </div>
@@ -86,8 +110,18 @@ export default function HomePage() {
             <div className={styles.experienceDuration}>
               February 2025 - June 2025
             </div>
+            <a
+              href="/posters/apple-2025-poster.pdf"
+              target="_blank"
+              className={styles.projectLink}
+            >
+              Poster
+            </a>
             <p className={styles.experienceDescription}>
-              Built a performance metric tracking dashboard. 
+              Built a build-health quality review dashboard used by 80+ Apple
+              teams, with a React.js frontend and a FastAPI/MongoDB backend.
+              Integrated group-based OIDC authentication and managed Kubernetes
+              deployments across staging and production.
             </p>
           </div>
         </div>
@@ -109,8 +143,19 @@ export default function HomePage() {
               {" "}
               June 2025 - September 2025
             </div>
+            <a
+              href="/posters/brain-corp-2025-poster.pdf"
+              target="_blank"
+              className={styles.projectLink}
+            >
+              Poster
+            </a>
             <p className={styles.experienceDescription}>
-              Worked on improving product recognition. 
+              Experimented with retail product recognition improvements by LoRA fine-tuning open-source
+              vision-language models (+38% accuracy) and speeding up inference
+              with vLLM. Designed a multimodal rank-fusion approach that reached
+              88% accuracy while running ~13x faster and cheaper than the
+              existing method.
             </p>
           </div>
         </div>
@@ -206,8 +251,308 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className={styles.projectsSection}>
+        <h2 className={styles.sectionTitle}>Projects</h2>
+
+        <div className={styles.projectCard}>
+          <Image
+            src="/projects/wave-rover-coverage.jpg"
+            alt="Wave Rover coverage path with landmarks"
+            width={800}
+            height={644}
+            className={styles.projectImage}
+          />
+          <div className={styles.projectDetails}>
+            <h3 className={styles.projectTitle}>
+              <b>Autonomous Navigation on a Wave Rover</b>
+            </h3>
+            <div className={styles.projectMeta}>
+              CSE 276A (Intro to Robotics), UC San Diego, Fall 2025 · with
+              Mohak Vaswani
+            </div>
+            <div className={styles.projectLinks}>
+              <a
+                href="https://www.youtube.com/playlist?list=PLW1JCQ-gux1SQ1xb1dhEoMmFhvGJXRUco"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Video Playlist
+              </a>
+            </div>
+            <p className={styles.projectAuthors}>
+              A five-part series building up autonomy on a small differential
+              drive rover with ROS 2, from open-loop control to full area
+              coverage.
+            </p>
+            <ul className={styles.projectList}>
+              <li>
+                <b>Waypoint navigation:</b> calibrated open-loop
+                Turn–Move–Turn controller (
+                <a href="https://youtu.be/ygnEGRTPXZE" target="_blank">
+                  video
+                </a>
+                )
+              </li>
+              <li>
+                <b>Closed-loop control:</b> pose correction with natural
+                landmarks detected by YOLOv8 (
+                <a href="https://youtu.be/7m3iPV7zibM" target="_blank">
+                  video 1
+                </a>
+                ,{" "}
+                <a href="https://youtu.be/CjpzIK7HJEg" target="_blank">
+                  video 2
+                </a>
+                )
+              </li>
+              <li>
+                <b>EKF SLAM:</b> jointly estimating robot pose and landmark
+                positions on square and octagon trajectories (
+                <a href="https://youtu.be/3OvB93B4Qkg" target="_blank">
+                  square
+                </a>
+                ,{" "}
+                <a href="https://youtu.be/NDxrtJMPv8c" target="_blank">
+                  octagon
+                </a>
+                )
+              </li>
+              <li>
+                <b>Path planning:</b> A* shortest path on an occupancy grid and
+                safe path planning around obstacles (
+                <a href="https://youtu.be/tvWBXHm0_tg" target="_blank">
+                  shortest
+                </a>
+                ,{" "}
+                <a href="https://youtu.be/2i6tTxR8dfo" target="_blank">
+                  safe
+                </a>
+                )
+              </li>
+              <li>
+                <b>Coverage:</b> state-machine sweep planner with
+                landmark-based localization for full area coverage (
+                <a href="https://youtu.be/RzFtDciW3bk" target="_blank">
+                  video 1
+                </a>
+                ,{" "}
+                <a href="https://youtu.be/coyNmuuWW44" target="_blank">
+                  video 2
+                </a>
+                )
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className={styles.projectCard}>
+          <Image
+            src="/projects/vi-slam.jpg"
+            alt="Visual-inertial SLAM trajectory and landmarks"
+            width={900}
+            height={480}
+            className={styles.projectImage}
+          />
+          <div className={styles.projectDetails}>
+            <h3 className={styles.projectTitle}>
+              <b>Visual-Inertial SLAM</b>
+            </h3>
+            <div className={styles.projectMeta}>
+              ECE 276A (Sensing &amp; Estimation in Robotics), UC San Diego
+            </div>
+            <div className={styles.projectLinks}>
+              <a
+                href="/projects/visual-inertial-slam.pdf"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Report
+              </a>
+              <a
+                href="https://youtu.be/PSY-kURmLVM"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Video (Dataset 00)
+              </a>
+              <a
+                href="https://youtu.be/-57VRfxNehM"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Video (Dataset 01)
+              </a>
+            </div>
+            <p className={styles.projectAuthors}>
+              EKF-based visual-inertial SLAM on Clearpath Jackal data from
+              MIT&apos;s campus. Fuses IMU kinematics on SE(3) with stereo
+              camera features to jointly estimate the robot trajectory and 3D
+              landmark map, using sparse covariance slicing to keep updates
+              fast. Also implemented Shi-Tomasi + Lucas-Kanade feature tracking.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.projectCard}>
+          <Image
+            src="/projects/lidar-slam-texture.jpg"
+            alt="LiDAR SLAM floor texture map"
+            width={700}
+            height={686}
+            className={styles.projectImage}
+          />
+          <div className={styles.projectDetails}>
+            <h3 className={styles.projectTitle}>
+              <b>LiDAR-Based SLAM</b>
+            </h3>
+            <div className={styles.projectMeta}>
+              ECE 276A (Sensing &amp; Estimation in Robotics), UC San Diego
+            </div>
+            <div className={styles.projectLinks}>
+              <a
+                href="/projects/lidar-slam.pdf"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Report
+              </a>
+              <a
+                href="https://youtu.be/7fcoYnrF8NI"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                PGO Video (Dataset 20)
+              </a>
+              <a
+                href="https://youtu.be/BcJX1bN4RRA"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                PGO Video (Dataset 21)
+              </a>
+            </div>
+            <p className={styles.projectAuthors}>
+              SLAM for a differential-drive robot using wheel encoders, an IMU,
+              a 2D LiDAR and an RGB-D camera. Dead-reckoned odometry is refined
+              with ICP scan matching, then loop closures are enforced with
+              GTSAM pose graph optimization to produce an occupancy grid and a
+              floor texture map.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.projectCard}>
+          <Image
+            src="/projects/imu-panorama.jpg"
+            alt="Panorama stitched from estimated orientations"
+            width={900}
+            height={514}
+            className={styles.projectImage}
+          />
+          <div className={styles.projectDetails}>
+            <h3 className={styles.projectTitle}>
+              <b>IMU Orientation Estimation &amp; Panorama Stitching</b>
+            </h3>
+            <div className={styles.projectMeta}>
+              ECE 276A (Sensing &amp; Estimation in Robotics), UC San Diego
+            </div>
+            <div className={styles.projectLinks}>
+              <a
+                href="/projects/imu-orientation-panorama.pdf"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Report
+              </a>
+            </div>
+            <p className={styles.projectAuthors}>
+              Estimated 3D orientation from IMU data by solving a constrained
+              optimization over unit quaternions with projected gradient
+              descent (PyTorch autograd), validated against VICON ground truth.
+              The estimates were then used to stitch camera images into
+              panoramas via equirectangular projection.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.projectCard}>
+          <Image
+            src="/projects/pupperdoro.jpg"
+            alt="Pupperdoro robot built on a MiniPupper 2.0 with an OAK-D camera"
+            width={700}
+            height={507}
+            className={styles.projectImage}
+          />
+          <div className={styles.projectDetails}>
+            <h3 className={styles.projectTitle}>
+              <b>Pupperdoro: An Embodied Study Companion Robot</b>
+            </h3>
+            <div className={styles.projectMeta}>
+              CSE 276B (Human-Robot Interaction), UC San Diego, Spring 2026 ·
+              with Kate Romero and Faith Rivera
+            </div>
+            <div className={styles.projectLinks}>
+              <a
+                href="https://youtu.be/ek_93tSEXY8"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Presentation
+              </a>
+              <a
+                href="https://youtu.be/ZejkqTIedLM"
+                target="_blank"
+                className={styles.projectLink}
+              >
+                Demo Video
+              </a>
+            </div>
+            <p className={styles.projectAuthors}>
+              A Pomodoro timer robot on a MiniPupper 2.0 that keeps students
+              focused by physically separating them from their phones. Using an
+              OAK-D camera, AprilTags, and touch sensors, it detects when the
+              user is distracted and responds with facial and audio emotes,
+              driven by a ROS 2 state machine. I built the &quot;device
+              jail&quot; and the emote audio. We ran a user study comparing it
+              with a digital Pomodoro timer.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.teaching}>
         <h2 className={styles.sectionTitle}>Teaching Experience</h2>
+
+        <div className={styles.teachingRole}>
+          <Image
+            src={ucsd}
+            alt="ucsd Logo"
+            className={styles.teachingLogoMath}
+          />
+          <div className={styles.teachingDetails}>
+            <div className={styles.teachingRoleTitle}>
+              Graduate Teaching Assistant
+            </div>
+            <div className={styles.teachingDepartment}>
+              Computer Science and Engineering , UCSD
+            </div>
+            <ul className={styles.teachingCourseList}>
+              <li>
+                <b>Introduction to Robotics (CSE 276A)</b>, Fall 2026 with Professor Henrik Christensen
+              </li>
+            </ul>
+
+
+            <div className={styles.teachingDepartment}>
+              Cognitive Science Department , UCSD
+            </div>
+            <ul className={styles.teachingCourseList}>
+              <li>
+                <b>Prototyping (DSGN 100)</b>, Spring 2026 with Professor Scott Klemmer
+              </li>
+            </ul>
+          </div>
+        </div>
 
         <div className={styles.teachingRole}>
           <Image src={cse} alt="CSE Logo" className={styles.teachingLogoCSE} />
