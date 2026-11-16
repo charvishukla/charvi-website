@@ -476,6 +476,37 @@ export default function HomePage() {
 
         <div className={styles.projectCard}>
           <Image
+            src="/projects/parallel-computing.svg"
+            alt="Strong scaling chart: MPI speedup versus number of processes"
+            width={700}
+            height={480}
+            className={styles.projectImage}
+          />
+          <div className={styles.projectDetails}>
+            <h3 className={styles.projectTitle}>
+              <b>Parallel Computation: Fast GEMM &amp; Distributed Stencils</b>
+            </h3>
+            <div className={styles.projectLinks}>
+              <a
+                href="/parallel-computing/index.html"
+                className={styles.projectLink}
+              >
+                Results Page
+              </a>
+            </div>
+            <p className={styles.projectAuthors}>
+              Performance engineering at three levels of parallelism. A
+              cache-blocked ARM SVE matrix multiply reaching 23.1 GFLOP/s
+              (faster than OpenBLAS), a tiled CUDA kernel reaching 3.3 TFLOP/s
+              on an NVIDIA T4 (~63× over naive), and an MPI wave-equation
+              solver with overlapped ghost-cell exchange that scales to a 273×
+              speedup on 384 cores of SDSC Expanse.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.projectCard}>
+          <Image
             src="/projects/pupperdoro.jpg"
             alt="Pupperdoro robot built on a MiniPupper 2.0 with an OAK-D camera"
             width={700}

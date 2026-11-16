@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parallel Computation Results</title>
+<meta name="description" content="Optimized matrix multiplication on ARM SVE and CUDA, and an MPI wave-equation solver. CSE 260 at UC San Diego.">
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root {
+    --bg: #ffffff; --ink: #222; --muted: #666; --faint: #888; --line: #e5e5e5; --soft: #f6f7f9;
+    --link: #0070f3; --s1: #0070f3; --s2: #e8590c; --s3: #8a8f98; --grid: #ececec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171a; --ink: #e8e8e8; --muted: #a8adb4; --faint: #8a9099; --line: #2c3036; --soft: #1d2024;
+      --link: #4ea1ff; --s1: #4ea1ff; --s2: #ff8a4c; --s3: #8a8f98; --grid: #2a2e33;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171a; --ink: #e8e8e8; --muted: #a8adb4; --faint: #8a9099; --line: #2c3036; --soft: #1d2024;
+    --link: #4ea1ff; --s1: #4ea1ff; --s2: #ff8a4c; --s3: #8a8f98; --grid: #2a2e33;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: Arial, sans-serif; line-height: 1.6; }
+  .container { max-width: 820px; margin: 0 auto; padding: 20px 16px 48px; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  nav.toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; padding-bottom: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
+  nav.toolbar .jump { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+  nav.toolbar a { text-decoration: underline; text-underline-offset: 3px; }
+  h1 { font-size: 2rem; line-height: 1.25; margin: 0 0 8px; }
+  h2 { font-size: 1.5rem; margin: 48px 0 4px; scroll-margin-top: 16px; }
+  h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+  p { margin: 0 0 12px; }
+  .meta { color: var(--muted); margin-bottom: 4px; }
+  .lede { color: var(--muted); font-size: 1.05rem; }
+  ul { padding-left: 22px; margin: 0 0 12px; }
+  li { margin-bottom: 4px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 24px 0 8px; }
+  .stat { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
+  .stat b { display: block; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 0.9rem; }
+  .table-wrap { overflow-x: auto; margin: 8px 0 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+  th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 600; border-bottom: 2px solid var(--line); }
+  tr.best td { font-weight: 700; }
+  figure { margin: 12px 0 20px; }
+  figcaption { color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .chart text { fill: var(--muted); font-size: 12px; font-family: Arial, sans-serif; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+  .legend i { display: inline-block; width: 12px; height: 3px; vertical-align: middle; margin-right: 6px; }
+  .note { font-size: 0.9rem; color: var(--muted); }
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; color: var(--faint); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <nav class="toolbar" aria-label="Page navigation">
+    <a href="/">← Charvi Shukla</a>
+    <div class="jump">
+      <a href="#sve">ARM SVE GEMM</a>
+      <a href="#cuda">CUDA GEMM</a>
+      <a href="#mpi">MPI Stencil</a>
+    </div>
+  </nav>
+
+  <header>
+    <h1>Parallel Computation: Fast Matrix Multiply &amp; Distributed Stencils</h1>
+    <div class="meta">CSE 260 (Parallel Computation), UC San Diego, Fall 2025</div>
+    <p class="lede">Three performance-engineering projects at three levels of parallelism: SIMD vectorization on a single ARM core, thousands of threads on an NVIDIA GPU, and hundreds of processes across supercomputer nodes with MPI.</p>
+    <div class="stats">
+      <div class="stat"><b>23.1 GFLOP/s</b><span>ARM SVE DGEMM, beating OpenBLAS (19.1) at N=2047</span></div>
+      <div class="stat"><b>3.30 TFLOP/s</b><span>CUDA SGEMM on a T4, ~63× over the naive kernel</span></div>
+      <div class="stat"><b>273×</b><span>MPI speedup on 384 cores (SDSC Expanse)</span></div>
+    </div>
+  </header>
+
+  <!-- ===================== HW1 ===================== -->
+  <section id="sve">
+    <h2>1. Matrix Multiplication with ARM SVE</h2>
+    <div class="meta">Single-core double-precision GEMM on AWS Graviton </div>
+    <p>We wrote a cache-blocked DGEMM in the style of BLIS. The matrices are split into large tiles that fit in the L2 and L3 caches (M<sub>C</sub>=256, K<sub>C</sub>=128, N<sub>C</sub>=256). Each tile is packed into contiguous memory so the kernel reads it in order. A macro-kernel then hands each pair of packed sub-panels to a micro-kernel written with ARM SVE intrinsics.</p>
+    <ul>
+      <li><b>Micro-kernel:</b> computes an 8×8 block of C held entirely in vector registers. It runs in two half-passes that match the 4-double vector length, broadcasting values of A against loaded rows of B with fused multiply-adds.</li>
+      <li><b>Edge cases:</b> leftover rows go through smaller 4-, 2- and 1-row versions of the kernel. Leftover columns use SVE predicates to mask out invalid lanes, so the kernel never reads or writes out of bounds.</li>
+      <li><b>Profiling:</b> we used <code>perf</code> hardware counters to explain the dips in performance. For example, going from N=512 to N=513 adds about 9M L1 and 1.7M L2 cache refills because of the partial panels.</li>
+    </ul>
+
+    <figure class="chart" id="chart-sve">
+      <div class="legend"><span><i style="background:var(--s1)"></i>Our kernel</span><span><i style="background:var(--s2)"></i>OpenBLAS</span><span><i style="background:var(--s3)"></i>Naive</span></div>
+      <div class="plot"></div>
+      <figcaption>Performance (GFLOP/s) vs. matrix size N. Our kernel is faster than OpenBLAS for nearly every N ≥ 64.</figcaption>
+    </figure>
+
+    <h3>How each optimization added up</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Stage</th><th>Approx. GFLOP/s</th></tr></thead>
+      <tbody>
+        <tr><td>Naive triple loop</td><td>~1</td></tr>
+        <tr><td>Packing (BLIS-style, row-major)</td><td>~6.5</td></tr>
+        <tr><td>First SVE micro-kernel</td><td>~9–12</td></tr>
+        <tr><td>SVE, 4 then 8 rows of C at once</td><td>16 → 18</td></tr>
+        <tr><td>8×8 register block in two passes</td><td>~22–23</td></tr>
+        <tr class="best"><td>Parameter tuning (final)</td><td>up to 23.1</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ===================== HW2 ===================== -->
+  <section id="cuda">
+    <h2>2. Matrix Multiplication in CUDA</h2>
+    <div class="meta">Single-precision GEMM on an NVIDIA T4 GPU </div>
+    <p>Each 16×16 block of 256 threads computes one 64×64 tile of C. The block loads tiles of A and B into shared memory, and neighboring threads read neighboring addresses so global-memory loads coalesce. Each thread then keeps a 4×4 block of C in registers, which gives it 16 independent accumulators (instruction-level parallelism). The inner loops are fully unrolled.</p>
+    <ul>
+      <li><b>Two load paths:</b> when N divides evenly into tiles, loads skip bounds checks entirely. Otherwise, partial tiles are padded with zeros, so the compute loop stays the same for every N.</li>
+      <li><b>What didn't work:</b> double-buffered software pipelining went over the shared-memory budget at our tile sizes.</li>
+      <li><b>Roofline:</b> the T4's theoretical peak is 7.68 TFLOP/s. At N=2048 the arithmetic intensity is about 341 FLOP/byte, far into the compute-bound region, and our kernel reaches 3.30 TFLOP/s, about 42% of peak.</li>
+    </ul>
+
+    <figure class="chart" id="chart-cuda">
+      <div class="legend"><span><i style="background:var(--s1)"></i>Our kernel</span><span><i style="background:var(--s2)"></i>cuBLAS</span></div>
+      <div class="plot"></div>
+      <figcaption>Performance (GFLOP/s) vs. N. Both curves zig-zag: sizes that are multiples of the tile width (for example 1024 and 1280) peak, and N+1 dips because of partial tiles and warp divergence.</figcaption>
+    </figure>
+
+    <h3>Thread block size comparison (GFLOP/s)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>N</th><th>Naive</th><th>8×8</th><th>16×16</th><th>32×16</th><th>32×8</th></tr></thead>
+      <tbody>
+        <tr><td>256</td><td>23.6</td><td>1,229</td><td><b>1,518</b></td><td>881</td><td>827</td></tr>
+        <tr><td>512</td><td>31.7</td><td>1,552</td><td><b>2,759</b></td><td>2,412</td><td>2,125</td></tr>
+        <tr><td>1024</td><td>52.5</td><td>1,405</td><td><b>3,274</b></td><td>2,487</td><td>2,199</td></tr>
+        <tr><td>1025</td><td>–</td><td>1,056</td><td><b>2,613</b></td><td>2,385</td><td>2,119</td></tr>
+        <tr><td>2047</td><td>–</td><td>1,352</td><td><b>3,109</b></td><td>2,911</td><td>2,620</td></tr>
+        <tr><td>2048</td><td>52.5</td><td>1,357</td><td><b>3,298</b></td><td>2,969</td><td>2,576</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">A 16×16 block (256 threads, 8 full warps) was best at every size. An 8×8 block has only 2 warps and too little shared-memory reuse. 32×16 has 512 threads, which raises register pressure and lowers occupancy.</p>
+  </section>
+
+  <!-- ===================== HW3 ===================== -->
+  <section id="mpi">
+    <h2>3. Distributed 2D Wave Simulation with MPI</h2>
+    <div class="meta">5-point stencil wave solver on SDSC Expanse </div>
+    <p>The solver advances the 2D wave equation with a 5-point stencil and absorbing boundary conditions. The grid is split across a 2D Cartesian grid of MPI processes (<code>MPI_Cart_create</code>), and no process gets more than one extra row or column of work than any other.</p>
+    <ul>
+      <li><b>Ghost-cell exchange:</b> each step uses non-blocking <code>MPI_Isend</code>/<code>MPI_Irecv</code>. A strided <code>MPI_Type_vector</code> sends columns, which aren't contiguous in memory, without manual packing.</li>
+      <li><b>Overlapping communication and compute:</b> after posting the exchange, each process updates interior cells that don't depend on ghost cells, then waits and finishes the edge ring.</li>
+      <li><b>Boundaries:</b> absorbing boundary conditions are applied only on processes that sit on the global edge of the grid.</li>
+    </ul>
+
+    <figure class="chart" id="chart-mpi">
+      <div class="legend"><span><i style="background:var(--s1)"></i>Measured speedup</span><span><i style="background:var(--s3)"></i>Ideal (linear)</span></div>
+      <div class="plot"></div>
+      <figcaption>Strong scaling relative to 1 process. Problem sizes: N=1000 up to 16 processes, N=2000 for 16–128, N=4000 for 128–384. Efficiency falls from about 96% on 4 cores to about 71% on 384.</figcaption>
+    </figure>
+
+    <h3>Strong scaling at large core counts (N = 4000)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Cores</th><th>Geometry</th><th>Mpts/s</th><th>GFLOP/s</th><th>Speedup</th><th>Efficiency</th></tr></thead>
+      <tbody>
+        <tr><td>128</td><td>8×16</td><td>3,259</td><td>29.3</td><td>91×</td><td>71%</td></tr>
+        <tr><td>192</td><td>8×24</td><td>5,452</td><td>49.1</td><td>152×</td><td>79%</td></tr>
+        <tr><td>256</td><td>8×32</td><td>6,771</td><td>60.9</td><td>189×</td><td>74%</td></tr>
+        <tr class="best"><td>384</td><td>8×48</td><td>9,777</td><td>88.0</td><td>273×</td><td>71%</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Process geometry matters</h3>
+    <p>With the same 256 processes, the shape of the process grid changed throughput by 30%. C++ stores the grid row by row, so north–south ghost rows are contiguous while east–west ghost columns are strided and slower to send. Layouts that keep the strided edge short won, even over the square layout that minimizes total communication.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Geometry (256 cores, N=4000)</th><th>Sub-block</th><th>Mpts/s</th></tr></thead>
+      <tbody>
+        <tr><td>16×16 (square)</td><td>250 × 250</td><td>4,307</td></tr>
+        <tr><td>64×4</td><td>63 × 1000</td><td>4,939</td></tr>
+        <tr><td>8×32</td><td>500 × 125</td><td>5,466</td></tr>
+        <tr class="best"><td>32×8</td><td>125 × 500</td><td>5,603</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">We also ran the solver on a 27-core Raspberry Pi cluster. Tripling the core count from 9 to 27 gave a 2.6× speedup at N=2000, but only 2.0× at N=1000: the cluster's Gigabit Ethernet needs larger per-process workloads to hide its latency.</p>
+  </section>
+
+  <footer><a href="/">Back to main page</a></footer>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function niceMax(v) {
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    const n = v / p;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+  }
+  function lineChart(container, opts) {
+    const W = 760, H = 340, L = 56, R = 16, T = 12, B = 44;
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": opts.label });
+    const xMax = opts.xMax, yMax = niceMax(opts.yMax);
+    const X = x => L + (W - L - R) * x / xMax;
+    const Y = y => H - B - (H - T - B) * y / yMax;
+    for (let i = 0; i <= 5; i++) {
+      const v = yMax * i / 5;
+      el("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "var(--grid)" }, svg);
+      el("text", { x: L - 8, y: Y(v) + 4, "text-anchor": "end" }, svg).textContent = v.toLocaleString();
+    }
+    opts.xTicks.forEach(v => {
+      el("text", { x: X(v), y: H - B + 18, "text-anchor": "middle" }, svg).textContent = v.toLocaleString();
+    });
+    el("text", { x: (L + W - R) / 2, y: H - 6, "text-anchor": "middle" }, svg).textContent = opts.xLabel;
+    const yl = el("text", { x: 14, y: (T + H - B) / 2, "text-anchor": "middle", transform: `rotate(-90 14 ${(T + H - B) / 2})` }, svg);
+    yl.textContent = opts.yLabel;
+    opts.series.forEach(s => {
+      const pts = s.data.map(([x, y]) => `${X(x).toFixed(1)},${Y(y).toFixed(1)}`).join(" ");
+      el("polyline", { points: pts, fill: "none", stroke: s.color, "stroke-width": s.dash ? 1.5 : 2.5, "stroke-dasharray": s.dash || "none", "stroke-linejoin": "round" }, svg);
+      if (!s.dash) s.data.forEach(([x, y]) => {
+        const c = el("circle", { cx: X(x), cy: Y(y), r: 3.5, fill: s.color }, svg);
+        el("title", {}, c).textContent = `${s.name}: N/p = ${x}, ${y.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+      });
+    });
+    container.querySelector(".plot").appendChild(svg);
+  }
+
+  const sveN = [32,64,128,255,256,510,512,513,768,769,1023,1024,1025,1033,2047,2048,2049];
+  const sveOurs = [15.36,20.23,22.43,17.63,17.83,22.75,22.79,21.60,22.74,22.23,22.21,22.77,22.16,22.15,23.07,22.31,21.79];
+  const sveBlas = [18.43,19.63,19.35,19.05,19.39,19.01,19.32,19.28,18.82,19.02,18.94,18.76,18.92,18.91,19.06,19.04,18.97];
+  const sveNaive = [1.13,1.26,1.05,1.21,0.99,1.14,0.82,1.04,0.83,1.07,0.99,0.69,0.97,1.00,0.47,0.39,0.46];
+  const zip = (xs, ys) => xs.map((x, i) => [x, ys[i]]);
+  lineChart(document.getElementById("chart-sve"), {
+    label: "ARM SVE DGEMM performance vs N", xMax: 2100, yMax: 25, xTicks: [0,500,1000,1500,2000],
+    xLabel: "Matrix size N", yLabel: "GFLOP/s",
+    series: [
+      { name: "Naive", color: "var(--s3)", data: zip(sveN, sveNaive) },
+      { name: "OpenBLAS", color: "var(--s2)", data: zip(sveN, sveBlas) },
+      { name: "Our kernel", color: "var(--s1)", data: zip(sveN, sveOurs) }
+    ]
+  });
+
+  const cuN = [255,256,512,513,640,641,768,769,896,897,1023,1024,1025,1152,1153,1280,1281,1536,1537,2047,2048,2049];
+  const cuOurs = [1246,1518,2759,1783,2938,2054,3181,2301,3404,2531,2924,3274,2613,3285,2635,3546,2674,3409,2921,3109,3298,2673];
+  const cuBlas = [1984,1996,5074,2810,5698,4194,6104,4978,6177,5441,6398,6742,5554,6541,5792,7079,6048,7384,6396,7455,7306,6423];
+  lineChart(document.getElementById("chart-cuda"), {
+    label: "CUDA SGEMM performance vs N", xMax: 2100, yMax: 8000, xTicks: [0,500,1000,1500,2000],
+    xLabel: "Matrix size N", yLabel: "GFLOP/s",
+    series: [
+      { name: "cuBLAS", color: "var(--s2)", data: zip(cuN, cuBlas) },
+      { name: "Our kernel", color: "var(--s1)", data: zip(cuN, cuOurs) }
+    ]
+  });
+
+  const mpi = [[1,1],[2,1.839],[4,3.845],[8,7.336],[16,15.51],[32,30.64],[64,59.62],[128,101.33],[192,152.42],[256,189.28],[384,273.32]];
+  lineChart(document.getElementById("chart-mpi"), {
+    label: "MPI strong scaling speedup vs processes", xMax: 400, yMax: 400, xTicks: [0,100,200,300,400],
+    xLabel: "MPI processes", yLabel: "Speedup",
+    series: [
+      { name: "Ideal", color: "var(--s3)", dash: "5 5", data: [[0,0],[400,400]] },
+      { name: "Measured speedup", color: "var(--s1)", data: mpi }
+    ]
+  });
+})();
+</script>
+</body>
+</html>
